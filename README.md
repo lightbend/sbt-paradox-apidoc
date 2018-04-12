@@ -4,7 +4,7 @@
 
 ## License
 
-The license is Apache 2.0, see LICENSE.md.
+The license is Apache 2.0, see LICENSE.
 
 ## Maintained by 
 
