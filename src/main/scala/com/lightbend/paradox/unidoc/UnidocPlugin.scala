@@ -9,9 +9,9 @@ import sbt._
 
 object UnidocPlugin extends AutoPlugin {
 
-  override def requires = ParadoxPlugin
+  override def requires: Plugins = ParadoxPlugin
 
-  override def trigger = noTrigger
+  override def trigger: PluginTrigger = noTrigger
 
   override def projectSettings: Seq[Setting[_]] = unidocSettings(Compile)
 
