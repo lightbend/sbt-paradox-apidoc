@@ -4,7 +4,7 @@ lazy val root = project
   .in(file("."))
   .settings(
     sbtPlugin := true,
-    organization := "com.lightbend.akka",
+    organization := "com.lightbend.paradox",
     name := "sbt-paradox-unidoc",
     addSbtPlugin(Library.sbtParadox),
     libraryDependencies ++= Seq(
