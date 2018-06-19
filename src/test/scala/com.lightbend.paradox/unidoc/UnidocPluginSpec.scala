@@ -106,7 +106,7 @@ class UnidocPluginSpec extends MarkdownBaseSpec {
       )
   }
 
-  it should "generate markdown correctly for type parameter and wiledcard" in {
+  it should "generate markdown correctly for type parameter and wildcard" in {
     markdown("@unidoc[Source[ServerSentEvent, \\_]]") shouldEqual
       html(
         """<p><span class="group-java">
