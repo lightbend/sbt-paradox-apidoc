@@ -2,13 +2,13 @@
  * Copyright (C) 2009-2018 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package com.lightbend.paradox.unidoc
+package com.lightbend.paradox.apidoc
 
 import com.lightbend.paradox.markdown.InlineDirective
 import org.pegdown.Printer
 import org.pegdown.ast.{DirectiveNode, TextNode, Visitor}
 
-class UnidocDirective(allClasses: IndexedSeq[String]) extends InlineDirective("unidoc") {
+class ApidocDirective(allClasses: IndexedSeq[String]) extends InlineDirective("apidoc") {
   def render(node: DirectiveNode, visitor: Visitor, printer: Printer): Unit = {
     if (node.label.split('[')(0).contains('.')) {
       val fqcn = node.label
@@ -17,7 +17,7 @@ class UnidocDirective(allClasses: IndexedSeq[String]) extends InlineDirective("u
         syntheticNode("scala", scalaLabel(label), fqcn, node).accept(visitor)
         syntheticNode("java", javaLabel(label), fqcn, node).accept(visitor)
       } else {
-        throw new java.lang.IllegalStateException(s"fqcn not found by @unidoc[$fqcn]")
+        throw new java.lang.IllegalStateException(s"fqcn not found by @apidoc[$fqcn]")
       }
     }
     else {
@@ -71,7 +71,7 @@ class UnidocDirective(allClasses: IndexedSeq[String]) extends InlineDirective("u
       case n =>
         throw new java.lang.IllegalStateException(
           s"$n matches found for $query, but not javadsl/scaladsl: ${matches.mkString(", ")}. " +
-            s"You may want to use the fully qualified class name as @unidoc[fqcn] instead of @unidoc[${label}]."
+            s"You may want to use the fully qualified class name as @apidoc[fqcn] instead of @apidoc[${label}]."
         )
     }
   }

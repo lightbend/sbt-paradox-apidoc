@@ -3,7 +3,7 @@
  */
 
 
-package com.lightbend.paradox.unidoc
+package com.lightbend.paradox.apidoc
 
 import com.lightbend.paradox.tree.Tree.{Forest, Location}
 import java.io.{File, PrintWriter}

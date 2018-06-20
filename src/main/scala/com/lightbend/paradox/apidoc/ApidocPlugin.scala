@@ -2,7 +2,7 @@
  * Copyright (C) 2009-2018 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package com.lightbend.paradox.unidoc
+package com.lightbend.paradox.apidoc
 
 import _root_.io.github.lukehutch.fastclasspathscanner.FastClasspathScanner
 import com.lightbend.paradox.markdown.Writer
@@ -13,8 +13,8 @@ import sbt._
 
 import scala.collection.JavaConverters._
 
-object UnidocPlugin extends AutoPlugin {
-  import UnidocKeys._
+object ApidocPlugin extends AutoPlugin {
+  import ApidocKeys._
 
   val version = ParadoxPlugin.readProperty("akka-paradox.properties", "akka.paradox.version")
 
@@ -22,22 +22,22 @@ object UnidocPlugin extends AutoPlugin {
 
   override def trigger: PluginTrigger = noTrigger
 
-  override def projectSettings: Seq[Setting[_]] = unidocSettings(Compile)
+  override def projectSettings: Seq[Setting[_]] = apidocSettings(Compile)
 
-  def unidocParadoxGlobalSettings: Seq[Setting[_]] = Seq(
-    unidocRootPackage := "scala",
+  def apidocParadoxGlobalSettings: Seq[Setting[_]] = Seq(
+    apidocRootPackage := "scala",
     paradoxDirectives ++= Def.taskDyn {
       val classpath = (fullClasspath in Compile).value.files.map(_.toURI.toURL).toArray
       val classLoader = new java.net.URLClassLoader(classpath, this.getClass.getClassLoader)
-      val scanner = new FastClasspathScanner(unidocRootPackage.value).addClassLoader(classLoader).scan()
+      val scanner = new FastClasspathScanner(apidocRootPackage.value).addClassLoader(classLoader).scan()
       val allClasses = scanner.getNamesOfAllClasses.asScala.toVector
       Def.task { Seq(
-        { _: Writer.Context ⇒ new UnidocDirective(allClasses) }
+        { _: Writer.Context ⇒ new ApidocDirective(allClasses) }
       )}
     }.value
   )
 
-  def unidocSettings(config: Configuration): Seq[Setting[_]] = unidocParadoxGlobalSettings ++ inConfig(config)(Seq(
+  def apidocSettings(config: Configuration): Seq[Setting[_]] = apidocParadoxGlobalSettings ++ inConfig(config)(Seq(
     // scoped settings here
   ))
 }
