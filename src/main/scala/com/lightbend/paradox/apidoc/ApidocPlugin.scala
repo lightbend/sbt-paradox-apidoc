@@ -20,7 +20,7 @@ object ApidocPlugin extends AutoPlugin {
 
   override def requires: Plugins = ParadoxPlugin
 
-  override def trigger: PluginTrigger = noTrigger
+  override def trigger: PluginTrigger = AllRequirements
 
   override def projectSettings: Seq[Setting[_]] = apidocSettings(Compile)
 
