@@ -5,7 +5,7 @@ lazy val root = project
   .settings(
     sbtPlugin := true,
     organization := "com.lightbend.paradox",
-    name := "sbt-paradox-unidoc",
+    name := "sbt-paradox-apidoc",
     addSbtPlugin(Library.sbtParadox),
     libraryDependencies ++= Seq(
       Library.fastClassPathScanner,

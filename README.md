@@ -1,4 +1,4 @@
-# sbt-paradox-unidoc
+# sbt-paradox-apidoc
 
 # Maintanance notes
 
