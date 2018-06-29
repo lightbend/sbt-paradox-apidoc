@@ -18,7 +18,7 @@ developers += Developer("contributors",
   "Contributors",
   "https://gitter.im/lightbend/paradox",
   url("https://github.com/lightbend/sbt-paradox-apidoc/graphs/contributors"))
-organizationName := "https://github.com/lightbend/sbt-paradox-apidoc/graphs/contributors"
+organizationName := "Lightbend Inc."
 startYear := Some(2018)
 
 bintrayOrganization := Some("sbt")
