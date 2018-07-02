@@ -1,12 +1,23 @@
-# sbt-paradox-apidoc
+# sbt-paradox-apidoc [![bintray-badge][]][bintray] [![travis-badge][]][travis]
 
-# Maintanance notes
+[bintray]:               https://bintray.com/sbt/sbt-plugin-releases/sbt-paradox-apidoc
+[bintray-badge]:         https://api.bintray.com/packages/sbt/sbt-plugin-releases/sbt-paradox-apidoc/images/download.svg
+[travis]:                https://travis-ci.org/lightbend/sbt-paradox-apidoc
+[travis-badge]:          https://travis-ci.org/lightbend/sbt-paradox-apidoc.svg?branch=master
+
+
+
+## Usage
+
+```scala
+addSbtPlugin("com.lightbend.paradox" % "sbt-paradox-apidoc" % "ba4e049c")
+```
 
 ## License
 
 The license is Apache 2.0, see LICENSE.
 
-## Maintained by 
+## Maintanance notes
 
 **This project is NOT supported under the Lightbend subscription.**
 
