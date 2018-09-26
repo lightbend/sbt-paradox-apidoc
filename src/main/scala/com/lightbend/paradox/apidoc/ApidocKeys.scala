@@ -18,6 +18,6 @@ package com.lightbend.paradox.apidoc
 
 import sbt._
 
-object ApidocKeys {
+trait ApidocKeys {
   val apidocRootPackage = settingKey[String]("")
 }
