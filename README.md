@@ -5,12 +5,12 @@
 [travis]:                https://travis-ci.org/lightbend/sbt-paradox-apidoc
 [travis-badge]:          https://travis-ci.org/lightbend/sbt-paradox-apidoc.svg?branch=master
 
-
+A [paradox](https://github.com/lightbend/paradox/) directive that automatically adds links for classes from documentation to scaladoc and javadoc.
 
 ## Usage
 
 ```scala
-addSbtPlugin("com.lightbend.paradox" % "sbt-paradox-apidoc" % "ba4e049c")
+addSbtPlugin("com.lightbend.paradox" % "sbt-paradox-apidoc" % "<latest>")
 ```
 
 ## License
