@@ -1,6 +1,7 @@
-scalaVersion := "2.12.4"
+scalaVersion := "2.12.7"
 
 sbtPlugin := true
+crossSbtVersions := List("1.0.0")
 organization := "com.lightbend.paradox"
 name := "sbt-paradox-apidoc"
 

@@ -1,9 +1,9 @@
 import sbt._
 
 object Version {
-  val fastClassPathScanner = "2.18.2"
+  val fastClassPathScanner = "2.21"
   val jtidy                = "r938"
-  val sbtParadox           = "0.3.2"
+  val sbtParadox           = "0.4.3"
   val scalatest            = "3.0.3"
 }
 

@@ -26,7 +26,8 @@ import sbt._
 import scala.collection.JavaConverters._
 
 object ApidocPlugin extends AutoPlugin {
-  import ApidocKeys._
+  object autoImport extends ApidocKeys
+  import autoImport._
 
   val version = ParadoxPlugin.readProperty("akka-paradox.properties", "akka.paradox.version")
 
