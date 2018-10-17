@@ -1,15 +1,15 @@
 import sbt._
 
 object Version {
-  val fastClassPathScanner = "2.21"
-  val jtidy                = "r938"
-  val sbtParadox           = "0.4.3"
-  val scalatest            = "3.0.3"
+  val classgraph = "4.4.2"
+  val jtidy      = "r938"
+  val sbtParadox = "0.4.3"
+  val scalatest  = "3.0.5"
 }
 
 object Library {
-  val fastClassPathScanner = "io.github.lukehutch"   %  "fast-classpath-scanner" % Version.fastClassPathScanner
-  val jtidy                = "net.sf.jtidy"          %  "jtidy"                  % Version.jtidy
-  val sbtParadox           = "com.lightbend.paradox" %  "sbt-paradox"            % Version.sbtParadox
-  val scalatest            = "org.scalatest"         %% "scalatest"              % Version.scalatest
+  val classgraph = "io.github.classgraph"  % "classgraph"  % Version.classgraph
+  val jtidy      = "net.sf.jtidy"          % "jtidy"       % Version.jtidy
+  val sbtParadox = "com.lightbend.paradox" % "sbt-paradox" % Version.sbtParadox
+  val scalatest  = "org.scalatest"         %% "scalatest"  % Version.scalatest
 }
