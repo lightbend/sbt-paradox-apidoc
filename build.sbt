@@ -7,7 +7,7 @@ name := "sbt-paradox-apidoc"
 
 addSbtPlugin(Library.sbtParadox)
 libraryDependencies ++= Seq(
-  Library.fastClassPathScanner,
+  Library.classgraph,
   Library.jtidy % Test,
   Library.scalatest % Test
 )
