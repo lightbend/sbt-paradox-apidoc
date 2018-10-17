@@ -6,6 +6,7 @@ jobs:
   include:
     - stage: test
       script: sbt test
+    - script: sbt scalafmtCheck scalafmtSbtCheck
     - stage: publish
       script: sbt ^publish
 

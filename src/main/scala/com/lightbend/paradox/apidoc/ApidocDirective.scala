@@ -21,7 +21,7 @@ import org.pegdown.Printer
 import org.pegdown.ast.{DirectiveNode, TextNode, Visitor}
 
 class ApidocDirective(allClasses: IndexedSeq[String]) extends InlineDirective("apidoc") {
-  def render(node: DirectiveNode, visitor: Visitor, printer: Printer): Unit = {
+  def render(node: DirectiveNode, visitor: Visitor, printer: Printer): Unit =
     if (node.label.split('[')(0).contains('.')) {
       val fqcn = node.label
       if (allClasses.contains(fqcn)) {
@@ -31,11 +31,9 @@ class ApidocDirective(allClasses: IndexedSeq[String]) extends InlineDirective("a
       } else {
         throw new java.lang.IllegalStateException(s"fqcn not found by @apidoc[$fqcn]")
       }
-    }
-    else {
+    } else {
       renderByClassName(node.label, node, visitor, printer)
     }
-  }
 
   private def baseClassName(label: String) = {
     val labelWithoutGenerics = label.split("\\[")(0)
@@ -52,16 +50,27 @@ class ApidocDirective(allClasses: IndexedSeq[String]) extends InlineDirective("a
 
   def syntheticNode(group: String, label: String, fqcn: String, node: DirectiveNode): DirectiveNode = {
     val syntheticSource = new DirectiveNode.Source.Direct(fqcn)
-    val attributes = new org.pegdown.ast.DirectiveAttributes.AttributeMap()
-    new DirectiveNode(DirectiveNode.Format.Inline, group, null, null, attributes, null,
-      new DirectiveNode(DirectiveNode.Format.Inline, group + "doc", label, syntheticSource, node.attributes, fqcn,
-        new TextNode(label)
-      ))
+    val attributes      = new org.pegdown.ast.DirectiveAttributes.AttributeMap()
+    new DirectiveNode(
+      DirectiveNode.Format.Inline,
+      group,
+      null,
+      null,
+      attributes,
+      null,
+      new DirectiveNode(DirectiveNode.Format.Inline,
+                        group + "doc",
+                        label,
+                        syntheticSource,
+                        node.attributes,
+                        fqcn,
+                        new TextNode(label))
+    )
   }
 
   def renderByClassName(label: String, node: DirectiveNode, visitor: Visitor, printer: Printer): Unit = {
-    val query = node.label.replaceAll("\\\\_", "_")
-    val className = baseClassName(query)
+    val query       = node.label.replaceAll("\\\\_", "_")
+    val className   = baseClassName(query)
     val classSuffix = if (query.endsWith("$")) "$" else ""
 
     val matches = allClasses.filter(_.endsWith('.' + className))
