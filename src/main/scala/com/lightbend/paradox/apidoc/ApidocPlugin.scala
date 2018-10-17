@@ -16,7 +16,7 @@
 
 package com.lightbend.paradox.apidoc
 
-import _root_.io.github.lukehutch.fastclasspathscanner.FastClasspathScanner
+import io.github.classgraph.ClassGraph
 import com.lightbend.paradox.markdown.Writer
 import com.lightbend.paradox.sbt.ParadoxPlugin
 import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport.paradoxDirectives
@@ -42,8 +42,11 @@ object ApidocPlugin extends AutoPlugin {
     paradoxDirectives ++= Def.taskDyn {
       val classpath = (fullClasspath in Compile).value.files.map(_.toURI.toURL).toArray
       val classLoader = new java.net.URLClassLoader(classpath, this.getClass.getClassLoader)
-      val scanner = new FastClasspathScanner(apidocRootPackage.value).addClassLoader(classLoader).scan()
-      val allClasses = scanner.getNamesOfAllClasses.asScala.toVector
+      val scanner = new ClassGraph()
+        .whitelistPackages(apidocRootPackage.value)
+        .addClassLoader(classLoader)
+        .scan()
+      val allClasses = scanner.getAllClasses.getNames.asScala.toVector
       Def.task { Seq(
         { _: Writer.Context ⇒ new ApidocDirective(allClasses) }
       )}
