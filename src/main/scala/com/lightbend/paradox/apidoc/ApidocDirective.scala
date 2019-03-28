@@ -69,9 +69,9 @@ class ApidocDirective(allClasses: IndexedSeq[String]) extends InlineDirective("a
   }
 
   def renderByClassName(label: String, node: DirectiveNode, visitor: Visitor, printer: Printer): Unit = {
-    val query       = node.label.replaceAll("\\\\_", "_")
-    val className   = baseClassName(query)
-    val classSuffix = if (query.endsWith("$")) "$" else ""
+    val query            = node.label.replaceAll("\\\\_", "_")
+    val className        = baseClassName(query)
+    val scalaClassSuffix = if (query.endsWith("$")) "$" else ""
 
     val matches = allClasses.filter(_.endsWith('.' + className))
     matches.size match {
@@ -80,14 +80,14 @@ class ApidocDirective(allClasses: IndexedSeq[String]) extends InlineDirective("a
       case 1 if matches(0).contains("adsl") =>
         throw new java.lang.IllegalStateException(s"Match for $query only found in one language: ${matches(0)}")
       case 1 =>
-        syntheticNode("scala", scalaLabel(query), matches(0) + classSuffix, node).accept(visitor)
-        syntheticNode("java", javaLabel(query), matches(0) + classSuffix, node).accept(visitor)
+        syntheticNode("scala", scalaLabel(query), matches(0) + scalaClassSuffix, node).accept(visitor)
+        syntheticNode("java", javaLabel(query), matches(0), node).accept(visitor)
       case 2 if matches.forall(_.contains("adsl")) =>
         matches.foreach(m => {
           if (!m.contains("javadsl"))
-            syntheticNode("scala", scalaLabel(query), m + classSuffix, node).accept(visitor)
+            syntheticNode("scala", scalaLabel(query), m + scalaClassSuffix, node).accept(visitor)
           if (!m.contains("scaladsl"))
-            syntheticNode("java", javaLabel(query), m + classSuffix, node).accept(visitor)
+            syntheticNode("java", javaLabel(query), m, node).accept(visitor)
         })
       case n =>
         throw new java.lang.IllegalStateException(
