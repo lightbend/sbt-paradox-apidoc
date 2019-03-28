@@ -113,7 +113,7 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
       html(
         """<p><span class="group-scala">
           |<a href="https://doc.akka.io/api/akka/2.5/akka/cluster/client/ClusterClient$.html">ClusterClient</a></span><span class="group-java">
-          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/cluster/client/ClusterClient$.html">ClusterClient</a></span>
+          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/cluster/client/ClusterClient.html">ClusterClient</a></span>
           |</p>""".stripMargin
       )
   }
