@@ -18,7 +18,7 @@ package com.lightbend.paradox.apidoc
 
 import com.lightbend.paradox.markdown.Writer
 
-class ApidocPluginSpec extends MarkdownBaseSpec {
+class ApidocDirectiveSpec extends MarkdownBaseSpec {
   val rootPackage = "akka"
 
   val allClasses = Array(
