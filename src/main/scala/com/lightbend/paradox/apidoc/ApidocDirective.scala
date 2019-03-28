@@ -69,8 +69,8 @@ class ApidocDirective(allClasses: IndexedSeq[String]) extends InlineDirective("a
   }
 
   def renderByClassName(label: String, node: DirectiveNode, visitor: Visitor, printer: Printer): Unit = {
-    val query       = node.label.replaceAll("\\\\_", "_")
-    val className   = baseClassName(query)
+    val query            = node.label.replaceAll("\\\\_", "_")
+    val className        = baseClassName(query)
     val scalaClassSuffix = if (query.endsWith("$")) "$" else ""
 
     val matches = allClasses.filter(_.endsWith('.' + className))
