@@ -55,19 +55,20 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String]) extends InlineDi
     if (query.pattern.contains('.')) {
       if (allClasses.contains(query.pattern)) {
         renderMatches(query, Seq(query.pattern), node, visitor, printer)
-      } else allClasses.filter(_.contains(query.pattern)) match {
-        case Seq() =>
-          // No matches? only then try as regex.
-          val regex = (query.pattern + "$").r
-          allClasses.filter(cls => regex.findFirstMatchIn(cls).isDefined) match {
-            case Seq() =>
-              throw new java.lang.IllegalStateException(s"Class not found for by @apidoc[$query]")
-            case results =>
-              renderMatches(query, results, node, visitor, printer)
-          }
-        case results =>
-          renderMatches(query, results, node, visitor, printer)
-      }
+      } else
+        allClasses.filter(_.contains(query.pattern)) match {
+          case Seq() =>
+            // No matches? only then try as regex.
+            val regex = (query.pattern + "$").r
+            allClasses.filter(cls => regex.findFirstMatchIn(cls).isDefined) match {
+              case Seq() =>
+                throw new java.lang.IllegalStateException(s"Class not found for by @apidoc[$query]")
+              case results =>
+                renderMatches(query, results, node, visitor, printer)
+            }
+          case results =>
+            renderMatches(query, results, node, visitor, printer)
+        }
     } else {
       renderMatches(query, allClasses.filter(_.endsWith('.' + query.pattern)), node, visitor, printer)
     }
@@ -93,7 +94,11 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String]) extends InlineDi
     )
   }
 
-  def renderMatches(query: Query, matches: Seq[String], node: DirectiveNode, visitor: Visitor, printer: Printer): Unit = {
+  def renderMatches(query: Query,
+                    matches: Seq[String],
+                    node: DirectiveNode,
+                    visitor: Visitor,
+                    printer: Printer): Unit = {
     val scalaClassSuffix = if (query.linkToObject) "$" else ""
 
     matches.size match {
