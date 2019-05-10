@@ -4,7 +4,7 @@ object Version {
   val classgraph = "4.4.2"
   val jtidy      = "r938"
   val sbtParadox = "0.4.3"
-  val scalatest  = "3.0.5"
+  val scalatest  = "3.0.7"
 }
 
 object Library {
