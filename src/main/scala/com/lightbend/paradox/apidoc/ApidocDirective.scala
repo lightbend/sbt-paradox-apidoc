@@ -58,11 +58,11 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String]) extends InlineDi
       } else
         allClasses.filter(_.contains(query.pattern)) match {
           case Seq() =>
-            // No matches? only then try as regex.
-            val regex = (query.pattern + "$").r
+            // No matches? then try globbing
+            val regex = (query.pattern.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*") + "$").r
             allClasses.filter(cls => regex.findFirstMatchIn(cls).isDefined) match {
               case Seq() =>
-                throw new java.lang.IllegalStateException(s"Class not found for by @apidoc[$query]")
+                throw new java.lang.IllegalStateException(s"Class not found for @apidoc[$query]")
               case results =>
                 renderMatches(query, results, node, visitor, printer)
             }

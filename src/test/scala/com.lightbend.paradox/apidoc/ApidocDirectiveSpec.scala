@@ -93,7 +93,7 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
   }
 
   it should "allow linking to a typed class that is also present in classic" in {
-    markdown("@apidoc[typed.*Replicator$]") shouldEqual
+    markdown("@apidoc[typed.*.Replicator$]") shouldEqual
       html(
         """<p><span class="group-scala">
           |<a href="https://doc.akka.io/api/akka/2.5/akka/cluster/ddata/typed/scaladsl/Replicator$.html">Replicator</a></span><span class="group-java">
