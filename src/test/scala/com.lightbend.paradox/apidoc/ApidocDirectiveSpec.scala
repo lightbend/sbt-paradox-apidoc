@@ -26,6 +26,12 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
     "akka.actor.typed.ActorRef",
     "akka.cluster.client.ClusterClient",
     "akka.cluster.client.ClusterClient$",
+    "akka.cluster.ddata.Replicator",
+    "akka.cluster.ddata.Replicator$",
+    "akka.cluster.ddata.typed.scaladsl.Replicator",
+    "akka.cluster.ddata.typed.scaladsl.Replicator$",
+    "akka.cluster.ddata.typed.javadsl.Replicator",
+    "akka.cluster.ddata.typed.javadsl.Replicator$",
     "akka.dispatch.Envelope",
     "akka.http.javadsl.model.sse.ServerSentEvent",
     "akka.http.javadsl.marshalling.Marshaller",
@@ -39,7 +45,7 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
     "akka.stream.javadsl.Flow",
     "akka.stream.javadsl.Flow$",
     "akka.stream.scaladsl.Flow",
-    "akka.stream.scaladsl.Flow$"
+    "akka.stream.scaladsl.Flow$",
   )
 
   override val markdownWriter = new Writer(
@@ -86,6 +92,26 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
       )
   }
 
+  it should "allow linking to a typed class that is also present in classic" in {
+    markdown("@apidoc[typed.*.Replicator$]") shouldEqual
+      html(
+        """<p><span class="group-scala">
+          |<a href="https://doc.akka.io/api/akka/2.5/akka/cluster/ddata/typed/scaladsl/Replicator$.html">Replicator</a></span><span class="group-java">
+          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/cluster/ddata/typed/javadsl/Replicator.html">Replicator</a></span>
+          |</p>""".stripMargin
+      )
+  }
+
+  it should "allow linking to a classic class that is also present in typed" in {
+    markdown("@apidoc[ddata.Replicator$]") shouldEqual
+      html(
+        """<p><span class="group-scala">
+          |<a href="https://doc.akka.io/api/akka/2.5/akka/cluster/ddata/Replicator$.html">Replicator</a></span><span class="group-java">
+          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/cluster/ddata/Replicator.html">Replicator</a></span>
+          |</p>""".stripMargin
+      )
+  }
+
   it should "throw an exception when two matches found but javadsl/scaladsl is not in their packages" in {
     val thrown = the[IllegalStateException] thrownBy markdown("@apidoc[ActorRef]")
     thrown.getMessage shouldEqual
@@ -102,10 +128,14 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
       )
   }
 
-  it should "throw an exception when `.` is in the [label], but the label is not fqcn" in {
-    val thrown = the[IllegalStateException] thrownBy markdown("@apidoc[actor.typed.ActorRef]")
-    thrown.getMessage shouldEqual
-      "fqcn not found by @apidoc[actor.typed.ActorRef]"
+  it should "find a class by partiql fqdn" in {
+    markdown("@apidoc[actor.typed.ActorRef]") shouldEqual
+    html(
+      """<p><span class="group-scala">
+        |<a href="https://doc.akka.io/api/akka/2.5/akka/actor/typed/ActorRef.html">ActorRef</a></span><span class="group-java">
+        |<a href="https://doc.akka.io/japi/akka/2.5/?akka/actor/typed/ActorRef.html">ActorRef</a></span>
+        |</p>""".stripMargin
+    )
   }
 
   it should "generate markdown correctly for a companion object" in {
