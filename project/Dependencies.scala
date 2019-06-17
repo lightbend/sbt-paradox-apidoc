@@ -3,7 +3,7 @@ import sbt._
 object Version {
   val classgraph = "4.8.41"
   val jtidy      = "r938"
-  val sbtParadox = "0.4.3"
+  val sbtParadox = "0.5.5"
   val scalatest  = "3.0.8"
 }
 
