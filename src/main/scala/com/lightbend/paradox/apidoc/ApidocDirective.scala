@@ -84,21 +84,25 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String]) extends InlineDi
       null,
       attributes,
       null,
-      new DirectiveNode(DirectiveNode.Format.Inline,
-                        group + "doc",
-                        label,
-                        syntheticSource,
-                        node.attributes,
-                        fqcn,
-                        new TextNode(label))
+      new DirectiveNode(
+        DirectiveNode.Format.Inline,
+        group + "doc",
+        label,
+        syntheticSource,
+        node.attributes,
+        fqcn,
+        new TextNode(label)
+      )
     )
   }
 
-  def renderMatches(query: Query,
-                    matches: Seq[String],
-                    node: DirectiveNode,
-                    visitor: Visitor,
-                    printer: Printer): Unit = {
+  def renderMatches(
+      query: Query,
+      matches: Seq[String],
+      node: DirectiveNode,
+      visitor: Visitor,
+      printer: Printer
+  ): Unit = {
     val scalaClassSuffix = if (query.linkToObject) "$" else ""
 
     matches.size match {
@@ -119,7 +123,7 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String]) extends InlineDi
       case n =>
         throw new java.lang.IllegalStateException(
           s"$n matches found for $query, but not javadsl/scaladsl: ${matches.mkString(", ")}. " +
-            s"You may want to use the fully qualified class name as @apidoc[fqcn] instead of @apidoc[$query]."
+              s"You may want to use the fully qualified class name as @apidoc[fqcn] instead of @apidoc[$query]."
         )
     }
   }

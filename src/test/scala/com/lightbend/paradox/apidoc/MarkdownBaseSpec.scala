@@ -33,8 +33,9 @@ abstract class MarkdownBaseSpec extends FlatSpec with Matchers {
   def markdown(text: String)(implicit context: Location[Page] => Writer.Context = writerContext): String =
     markdownPages("test.md" -> text).getOrElse("test.html", "")
 
-  def markdownPages(mappings: (String, String)*)(
-      implicit context: Location[Page] => Writer.Context = writerContext): Map[String, String] = {
+  def markdownPages(
+      mappings: (String, String)*
+  )(implicit context: Location[Page] => Writer.Context = writerContext): Map[String, String] = {
     def render(location: Option[Location[Page]], rendered: Seq[(String, String)] = Seq.empty): Seq[(String, String)] =
       location match {
         case Some(loc) =>
@@ -46,8 +47,9 @@ abstract class MarkdownBaseSpec extends FlatSpec with Matchers {
     render(Location.forest(pages(mappings: _*))).toMap
   }
 
-  def layoutPages(mappings: (String, String)*)(templates: (String, String)*)(
-      implicit context: Location[Page] => Writer.Context = writerContext): Map[String, String] = {
+  def layoutPages(mappings: (String, String)*)(
+      templates: (String, String)*
+  )(implicit context: Location[Page] => Writer.Context = writerContext): Map[String, String] = {
     val templateDirectory = Files.createTempDirectory("templates")
     createFileTemplates(templateDirectory, templates)
     def render(location: Option[Location[Page]], rendered: Seq[(String, String)] = Seq.empty): Seq[(String, String)] =
@@ -106,10 +108,10 @@ abstract class MarkdownBaseSpec extends FlatSpec with Matchers {
   def pagesWithProperties(properties: Map[String, String], mappings: (String, String)*): Forest[Page] = {
     import com.lightbend.paradox.markdown.Path
     val parsed = mappings map {
-      case (path, text) =>
-        val frontin = Frontin(prepare(text))
-        (new File(path), path, markdownReader.read(frontin.body), frontin.header)
-    }
+          case (path, text) =>
+            val frontin = Frontin(prepare(text))
+            (new File(path), path, markdownReader.read(frontin.body), frontin.header)
+        }
     Page.forest(parsed, Path.replaceSuffix(Writer.DefaultSourceSuffix, Writer.DefaultTargetSuffix), properties)
   }
 
