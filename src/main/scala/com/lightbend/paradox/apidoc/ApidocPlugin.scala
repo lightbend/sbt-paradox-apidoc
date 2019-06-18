@@ -40,26 +40,27 @@ object ApidocPlugin extends AutoPlugin {
   def apidocParadoxGlobalSettings: Seq[Setting[_]] = Seq(
     apidocRootPackage := "scala",
     paradoxDirectives ++= Def.taskDyn {
-      val classpath   = (fullClasspath in Compile).value.files.map(_.toURI.toURL).toArray
-      val classLoader = new java.net.URLClassLoader(classpath, this.getClass.getClassLoader)
-      val scanner = new ClassGraph()
-        .whitelistPackages(apidocRootPackage.value)
-        .addClassLoader(classLoader)
-        .scan()
-      val allClasses = scanner.getAllClasses.getNames.asScala.toVector
-      Def.task {
-        Seq(
-          { _: Writer.Context ⇒
-            new ApidocDirective(allClasses)
+          val classpath   = (fullClasspath in Compile).value.files.map(_.toURI.toURL).toArray
+          val classLoader = new java.net.URLClassLoader(classpath, this.getClass.getClassLoader)
+          val scanner = new ClassGraph()
+            .whitelistPackages(apidocRootPackage.value)
+            .addClassLoader(classLoader)
+            .scan()
+          val allClasses = scanner.getAllClasses.getNames.asScala.toVector
+          Def.task {
+            Seq(
+              { _: Writer.Context ⇒
+                new ApidocDirective(allClasses)
+              }
+            )
           }
-        )
-      }
-    }.value
+        }.value
   )
 
   def apidocSettings(config: Configuration): Seq[Setting[_]] =
     apidocParadoxGlobalSettings ++ inConfig(config)(
-      Seq(
-        // scoped settings here
-      ))
+          Seq(
+            // scoped settings here
+          )
+        )
 }
