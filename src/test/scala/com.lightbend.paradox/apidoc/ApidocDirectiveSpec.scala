@@ -49,7 +49,7 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
   )
 
   override val markdownWriter = new Writer(
-    linkRenderer = Writer.defaultLinks,
+    linkRenderer        = Writer.defaultLinks,
     verbatimSerializers = Writer.defaultVerbatims,
     serializerPlugins = Writer.defaultPlugins(
       Writer.defaultDirectives ++ Seq(
@@ -80,7 +80,6 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
     thrown.getMessage shouldEqual
       "No matches found for ThereIsNoSuchClass"
   }
-
 
   it should "generate markdown correctly when 2 matches found and their package names include javadsl/scaladsl" in {
     markdown("@apidoc[Flow]") shouldEqual
@@ -130,12 +129,12 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
 
   it should "find a class by partiql fqdn" in {
     markdown("@apidoc[actor.typed.ActorRef]") shouldEqual
-    html(
-      """<p><span class="group-scala">
-        |<a href="https://doc.akka.io/api/akka/2.5/akka/actor/typed/ActorRef.html">ActorRef</a></span><span class="group-java">
-        |<a href="https://doc.akka.io/japi/akka/2.5/?akka/actor/typed/ActorRef.html">ActorRef</a></span>
-        |</p>""".stripMargin
-    )
+      html(
+        """<p><span class="group-scala">
+          |<a href="https://doc.akka.io/api/akka/2.5/akka/actor/typed/ActorRef.html">ActorRef</a></span><span class="group-java">
+          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/actor/typed/ActorRef.html">ActorRef</a></span>
+          |</p>""".stripMargin
+      )
   }
 
   it should "generate markdown correctly for a companion object" in {
