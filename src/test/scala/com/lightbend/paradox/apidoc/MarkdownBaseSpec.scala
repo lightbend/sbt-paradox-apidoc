@@ -96,7 +96,7 @@ abstract class MarkdownBaseSpec extends FlatSpec with Matchers {
   def writerContext(location: Location[Page]): Writer.Context =
     Writer.Context(
       location,
-      Page.allPaths(List(location.root.tree)).toSet,
+      Page.allPages(List(location.root.tree)),
       reader = new Reader,
       writer = new Writer,
       groups = Map("Language" -> Seq("Scala", "Java"))
