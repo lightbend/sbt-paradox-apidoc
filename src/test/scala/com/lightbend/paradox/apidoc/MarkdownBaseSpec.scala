@@ -63,8 +63,7 @@ abstract class MarkdownBaseSpec extends FlatSpec with Matchers {
           template.write(
             page.properties(Page.Properties.DefaultLayoutMdIndicator, template.defaultName),
             emptyPageContext,
-            outputFile,
-            new PageTemplate.ErrorLogger(s => println("[error] " + s))
+            outputFile
           )
           val fileContent = fileToContent(outputFile)
           outputFile.delete
