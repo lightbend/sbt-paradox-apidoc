@@ -19,5 +19,7 @@ package com.lightbend.paradox.apidoc
 import sbt._
 
 trait ApidocKeys {
-  val apidocRootPackage = settingKey[String]("")
+  val apidocRootPackage = settingKey[String]("Root package for all candidate classes")
+  val apidocProjects    = settingKey[Seq[ProjectReference]]("Projects which will be queried for classes to link to")
+  val apidocClasses     = taskKey[Seq[URL]]("All of the classes that will be queried")
 }
