@@ -11,7 +11,9 @@ jobs:
       name: Build code style check (fixed with `sbt scalafmtSbt`)
     - stage: test
       script: sbt test
-      name: Tests run
+      name: Run tests
+    - script: sbt scripted
+      name: Run sbt plugin tests
     - stage: publish
       script: sbt ^publish
       name: Publish artifacts
