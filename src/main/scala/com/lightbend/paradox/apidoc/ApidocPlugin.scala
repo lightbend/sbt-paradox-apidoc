@@ -54,8 +54,8 @@ object ApidocPlugin extends AutoPlugin {
           val allClasses = scanner.getAllClasses.getNames.asScala.toVector
           Def.task {
             Seq(
-              { _: Writer.Context ⇒
-                new ApidocDirective(allClasses)
+              { ctx: Writer.Context =>
+                new ApidocDirective(allClasses, ctx.properties)
               }
             )
           }
