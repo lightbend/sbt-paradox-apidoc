@@ -29,19 +29,24 @@ object ApidocPlugin extends AutoPlugin {
   object autoImport extends ApidocKeys
   import autoImport._
 
-  val version = ParadoxPlugin.readProperty("akka-paradox.properties", "akka.paradox.version")
-
-  override def requires: Plugins = ParadoxPlugin
-
+  override def requires: Plugins      = ParadoxPlugin
   override def trigger: PluginTrigger = AllRequirements
 
-  override def projectSettings: Seq[Setting[_]] = apidocSettings(Compile)
+  override def projectSettings: Seq[Setting[_]] = apidocParadoxZeroSettings
 
-  def apidocParadoxGlobalSettings: Seq[Setting[_]] = Seq(
+  def apidocParadoxZeroSettings: Seq[Setting[_]] = Seq(
     apidocRootPackage := "scala",
+    apidocClasses := Def.taskDyn {
+          val classpathProjects = apidocProjects.?.value
+            .map(inProjects)
+            .getOrElse {
+              inAggregates(LocalRootProject, includeRoot = true)
+            }
+          val filter = ScopeFilter(classpathProjects, inConfigurations(Compile))
+          fullClasspath.all(filter).map(_.flatMap(_.files).map(_.toURI.toURL))
+        }.value,
     paradoxDirectives ++= Def.taskDyn {
-          val classpath   = (fullClasspath in Compile).value.files.map(_.toURI.toURL).toArray
-          val classLoader = new java.net.URLClassLoader(classpath, this.getClass.getClassLoader)
+          val classLoader = new java.net.URLClassLoader(apidocClasses.value.toArray, this.getClass.getClassLoader)
           val scanner = new ClassGraph()
             .whitelistPackages(apidocRootPackage.value)
             .addClassLoader(classLoader)
@@ -56,11 +61,4 @@ object ApidocPlugin extends AutoPlugin {
           }
         }.value
   )
-
-  def apidocSettings(config: Configuration): Seq[Setting[_]] =
-    apidocParadoxGlobalSettings ++ inConfig(config)(
-          Seq(
-            // scoped settings here
-          )
-        )
 }

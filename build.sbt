@@ -1,4 +1,6 @@
-scalaVersion := "2.12.8"
+import scala.collection.JavaConverters._
+
+scalaVersion := "2.12.9"
 
 sbtPlugin        := true
 crossSbtVersions := List("1.0.0")
@@ -31,3 +33,9 @@ bintrayRepository   := "sbt-plugin-releases"
 
 enablePlugins(AutomateHeaderPlugin)
 scalafmtOnCompile := true
+
+enablePlugins(SbtPlugin)
+scriptedLaunchOpts += ("-Dproject.version=" + version.value)
+scriptedLaunchOpts ++= java.lang.management.ManagementFactory.getRuntimeMXBean.getInputArguments.asScala.filter(
+  a => Seq("-Xmx", "-Xms", "-XX", "-Dfile").exists(a.startsWith)
+)
