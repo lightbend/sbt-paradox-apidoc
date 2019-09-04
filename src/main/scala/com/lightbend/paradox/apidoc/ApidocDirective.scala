@@ -20,7 +20,13 @@ import com.lightbend.paradox.markdown.InlineDirective
 import org.pegdown.Printer
 import org.pegdown.ast.{DirectiveNode, TextNode, Visitor}
 
-class ApidocDirective(allClassesAndObjects: IndexedSeq[String]) extends InlineDirective("apidoc") {
+class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[String, String])
+    extends InlineDirective("apidoc") {
+  final val JavadocProperty = raw"""javadoc\.(.*)\.base_url""".r
+  final val JavadocBaseUrls = properties.collect {
+    case (JavadocProperty(pkg), url) => pkg -> url
+  }
+
   val allClasses = allClassesAndObjects.filterNot(_.endsWith("$"))
 
   private case class Query(pattern: String, generics: String, linkToObject: Boolean) {
@@ -74,7 +80,7 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String]) extends InlineDi
     }
   }
 
-  def syntheticNode(group: String, label: String, fqcn: String, node: DirectiveNode): DirectiveNode = {
+  def syntheticNode(group: String, doctype: String, label: String, fqcn: String, node: DirectiveNode): DirectiveNode = {
     val syntheticSource = new DirectiveNode.Source.Direct(fqcn)
     val attributes      = new org.pegdown.ast.DirectiveAttributes.AttributeMap()
     new DirectiveNode(
@@ -86,7 +92,7 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String]) extends InlineDi
       null,
       new DirectiveNode(
         DirectiveNode.Format.Inline,
-        group + "doc",
+        doctype + "doc",
         label,
         syntheticSource,
         node.attributes,
@@ -111,14 +117,22 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String]) extends InlineDi
       case 1 if matches(0).contains("adsl") =>
         throw new java.lang.IllegalStateException(s"Match for $query only found in one language: ${matches(0)}")
       case 1 =>
-        syntheticNode("scala", query.scalaLabel(matches(0)), matches(0) + scalaClassSuffix, node).accept(visitor)
-        syntheticNode("java", query.javaLabel(matches(0)), matches(0), node).accept(visitor)
+        val pkg = matches(0)
+        syntheticNode("scala", "scala", query.scalaLabel(pkg), pkg + scalaClassSuffix, node).accept(visitor)
+        if (hasJavadocUrl(pkg))
+          syntheticNode("java", "java", query.javaLabel(pkg), pkg, node).accept(visitor)
+        else
+          syntheticNode("java", "scala", query.scalaLabel(pkg), pkg + scalaClassSuffix, node).accept(visitor)
       case 2 if matches.forall(_.contains("adsl")) =>
-        matches.foreach(m => {
-          if (!m.contains("javadsl"))
-            syntheticNode("scala", query.scalaLabel(m), m + scalaClassSuffix, node).accept(visitor)
-          if (!m.contains("scaladsl"))
-            syntheticNode("java", query.javaLabel(m), m, node).accept(visitor)
+        matches.foreach(pkg => {
+          if (!pkg.contains("javadsl"))
+            syntheticNode("scala", "scala", query.scalaLabel(pkg), pkg + scalaClassSuffix, node).accept(visitor)
+          if (!pkg.contains("scaladsl")) {
+            if (hasJavadocUrl(pkg))
+              syntheticNode("java", "java", query.javaLabel(pkg), pkg, node).accept(visitor)
+            else
+              syntheticNode("java", "scala", query.scalaLabel(pkg), pkg + scalaClassSuffix, node).accept(visitor)
+          }
         })
       case n =>
         throw new java.lang.IllegalStateException(
@@ -126,6 +140,17 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String]) extends InlineDi
               s"You may want to use the fully qualified class name as @apidoc[fqcn] instead of @apidoc[$query]."
         )
     }
+  }
+
+  /**
+   * Logic borrowed from Paradox project:
+   * https://github.com/lightbend/paradox/blob/b271a6bbd249515405a06df58f298a57c34afeb5/core/src/main/scala/com/lightbend/paradox/markdown/Directive.scala#L276
+   */
+  private def hasJavadocUrl(pkg: String) = {
+    val levels     = pkg.split("[.]")
+    val packages   = (1 until levels.size).map(levels.take(_).mkString("."))
+    val javadocUrl = packages.reverse.collectFirst(JavadocBaseUrls)
+    javadocUrl.exists(!_.isEmpty)
   }
 
 }
