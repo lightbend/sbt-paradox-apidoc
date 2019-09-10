@@ -21,6 +21,8 @@ import java.io.{File, PrintWriter}
 
 import org.scalatest.{FlatSpec, Matchers}
 import com.lightbend.paradox.template.PageTemplate
+import com.lightbend.paradox.PrintlnLogger
+import com.lightbend.paradox.ThrowingErrorContext
 import java.nio.file._
 
 import com.lightbend.paradox.markdown._
@@ -98,6 +100,8 @@ abstract class MarkdownBaseSpec extends FlatSpec with Matchers {
       Page.allPages(List(location.root.tree)),
       reader = new Reader,
       writer = new Writer,
+      error  = new ThrowingErrorContext,
+      logger = PrintlnLogger,
       groups = Map("Language" -> Seq("Scala", "Java"))
     )
 
