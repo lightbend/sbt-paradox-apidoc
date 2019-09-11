@@ -14,7 +14,7 @@ libraryDependencies ++= Seq(
   Library.scalatest % Test
 )
 
-licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))
+licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0"))
 homepage := Some(url("https://github.com/lightbend/sbt-paradox-apidoc"))
 scmInfo := Some(
   ScmInfo(url("https://github.com/lightbend/sbt-paradox-apidoc"), "git@github.com:lightbend/sbt-paradox-apidoc.git")
@@ -25,8 +25,9 @@ developers += Developer(
   "https://gitter.im/lightbend/paradox",
   url("https://github.com/lightbend/sbt-paradox-apidoc/graphs/contributors")
 )
-organizationName := "Lightbend Inc."
-startYear        := Some(2018)
+organizationName     := "Lightbend Inc."
+organizationHomepage := Some(url("https://lightbend.com"))
+startYear            := Some(2018)
 
 bintrayOrganization := Some("sbt")
 bintrayRepository   := "sbt-plugin-releases"
@@ -39,3 +40,5 @@ scriptedLaunchOpts += ("-Dproject.version=" + version.value)
 scriptedLaunchOpts ++= java.lang.management.ManagementFactory.getRuntimeMXBean.getInputArguments.asScala.filter(
   a => Seq("-Xmx", "-Xms", "-XX", "-Dfile").exists(a.startsWith)
 )
+
+packageSrc / publishArtifact := false
