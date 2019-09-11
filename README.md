@@ -35,6 +35,15 @@ import com.lightbend.paradox.apidoc.ApidocPlugin.autoImport.apidocRootPackage
 (...)
 ```
 
+### When only Scaladoc is generated
+
+If the project does not publish Javadoc, the corresponding Javadoc base URL can be cleared and the Java links will point to the `javadsl` package in the Scaladocs.
+
+Example:
+```scala
+"javadoc.akka.stream.alpakka.base_url" -> ""
+```
+
 ## License
 
 The license is Apache 2.0, see LICENSE.
