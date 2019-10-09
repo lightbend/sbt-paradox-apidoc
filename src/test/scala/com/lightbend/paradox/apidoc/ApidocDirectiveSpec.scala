@@ -69,8 +69,8 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
     markdown("@apidoc[Envelope]") shouldEqual
       html(
         """<p><span class="group-scala">
-          |<a href="https://doc.akka.io/api/akka/2.5/akka/dispatch/Envelope.html">Envelope</a></span><span class="group-java">
-          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/dispatch/Envelope.html">Envelope</a></span>
+          |<a href="https://doc.akka.io/api/akka/2.5/akka/dispatch/Envelope.html" title="akka.dispatch.Envelope"><code>Envelope</code></a></span><span class="group-java">
+          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/dispatch/Envelope.html" title="akka.dispatch.Envelope"><code>Envelope</code></a></span>
           |</p>""".stripMargin
       )
   }
@@ -85,8 +85,8 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
     markdown("@apidoc[Flow]") shouldEqual
       html(
         """<p><span class="group-java">
-          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/stream/javadsl/Flow.html">Flow</a></span><span class="group-scala">
-          |<a href="https://doc.akka.io/api/akka/2.5/akka/stream/scaladsl/Flow.html">Flow</a></span>
+          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/stream/javadsl/Flow.html" title="akka.stream.javadsl.Flow"><code>Flow</code></a></span><span class="group-scala">
+          |<a href="https://doc.akka.io/api/akka/2.5/akka/stream/scaladsl/Flow.html" title="akka.stream.scaladsl.Flow"><code>Flow</code></a></span>
           |</p>""".stripMargin
       )
   }
@@ -95,8 +95,8 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
     markdown("@apidoc[typed.*.Replicator$]") shouldEqual
       html(
         """<p><span class="group-scala">
-          |<a href="https://doc.akka.io/api/akka/2.5/akka/cluster/ddata/typed/scaladsl/Replicator$.html">Replicator</a></span><span class="group-java">
-          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/cluster/ddata/typed/javadsl/Replicator.html">Replicator</a></span>
+          |<a href="https://doc.akka.io/api/akka/2.5/akka/cluster/ddata/typed/scaladsl/Replicator$.html" title="akka.cluster.ddata.typed.scaladsl.Replicator"><code>Replicator</code></a></span><span class="group-java">
+          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/cluster/ddata/typed/javadsl/Replicator.html" title="akka.cluster.ddata.typed.javadsl.Replicator"><code>Replicator</code></a></span>
           |</p>""".stripMargin
       )
   }
@@ -105,8 +105,8 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
     markdown("@apidoc[ddata.Replicator$]") shouldEqual
       html(
         """<p><span class="group-scala">
-          |<a href="https://doc.akka.io/api/akka/2.5/akka/cluster/ddata/Replicator$.html">Replicator</a></span><span class="group-java">
-          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/cluster/ddata/Replicator.html">Replicator</a></span>
+          |<a href="https://doc.akka.io/api/akka/2.5/akka/cluster/ddata/Replicator$.html"  title="akka.cluster.ddata.Replicator"><code>Replicator</code></a></span><span class="group-java">
+          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/cluster/ddata/Replicator.html" title="akka.cluster.ddata.Replicator"><code>Replicator</code></a></span>
           |</p>""".stripMargin
       )
   }
@@ -121,8 +121,8 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
     markdown("@apidoc[akka.actor.ActorRef]") shouldEqual
       html(
         """<p><span class="group-scala">
-          |<a href="https://doc.akka.io/api/akka/2.5/akka/actor/ActorRef.html">ActorRef</a></span><span class="group-java">
-          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/actor/ActorRef.html">ActorRef</a></span>
+          |<a href="https://doc.akka.io/api/akka/2.5/akka/actor/ActorRef.html" title="akka.actor.ActorRef"><code>ActorRef</code></a></span><span class="group-java">
+          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/actor/ActorRef.html" title="akka.actor.ActorRef"><code>ActorRef</code></a></span>
           |</p>""".stripMargin
       )
   }
@@ -131,8 +131,8 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
     markdown("@apidoc[actor.typed.ActorRef]") shouldEqual
       html(
         """<p><span class="group-scala">
-          |<a href="https://doc.akka.io/api/akka/2.5/akka/actor/typed/ActorRef.html">ActorRef</a></span><span class="group-java">
-          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/actor/typed/ActorRef.html">ActorRef</a></span>
+          |<a href="https://doc.akka.io/api/akka/2.5/akka/actor/typed/ActorRef.html" title="akka.actor.typed.ActorRef"><code>ActorRef</code></a></span><span class="group-java">
+          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/actor/typed/ActorRef.html" title="akka.actor.typed.ActorRef"><code>ActorRef</code></a></span>
           |</p>""".stripMargin
       )
   }
@@ -141,8 +141,8 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
     markdown("@apidoc[ClusterClient$]") shouldEqual
       html(
         """<p><span class="group-scala">
-          |<a href="https://doc.akka.io/api/akka/2.5/akka/cluster/client/ClusterClient$.html">ClusterClient</a></span><span class="group-java">
-          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/cluster/client/ClusterClient.html">ClusterClient</a></span>
+          |<a href="https://doc.akka.io/api/akka/2.5/akka/cluster/client/ClusterClient$.html" title="akka.cluster.client.ClusterClient"><code>ClusterClient</code></a></span><span class="group-java">
+          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/cluster/client/ClusterClient.html" title="akka.cluster.client.ClusterClient"><code>ClusterClient</code></a></span>
           |</p>""".stripMargin
       )
   }
@@ -151,8 +151,8 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
     markdown("@apidoc[Source[ServerSentEvent, \\_]]") shouldEqual
       html(
         """<p><span class="group-java">
-          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/stream/javadsl/Source.html">Source&lt;ServerSentEvent, ?&gt;</a></span><span class="group-scala">
-          |<a href="https://doc.akka.io/api/akka/2.5/akka/stream/scaladsl/Source.html">Source[ServerSentEvent, _]</a></span>
+          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/stream/javadsl/Source.html" title="akka.stream.javadsl.Source"><code>Source&lt;ServerSentEvent, ?&gt;</code></a></span><span class="group-scala">
+          |<a href="https://doc.akka.io/api/akka/2.5/akka/stream/scaladsl/Source.html" title="akka.stream.scaladsl.Source"><code>Source[ServerSentEvent, _]</code></a></span>
           |</p>""".stripMargin
       )
   }
@@ -161,8 +161,8 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
     markdown("@apidoc[Flow[Message, Message, Mat]]") shouldEqual
       html(
         """<p><span class="group-java">
-          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/stream/javadsl/Flow.html">Flow&lt;Message, Message, Mat&gt;</a></span><span class="group-scala">
-          |<a href="https://doc.akka.io/api/akka/2.5/akka/stream/scaladsl/Flow.html">Flow[Message, Message, Mat]</a></span>
+          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/stream/javadsl/Flow.html" title="akka.stream.javadsl.Flow"><code>Flow&lt;Message, Message, Mat&gt;</code></a></span><span class="group-scala">
+          |<a href="https://doc.akka.io/api/akka/2.5/akka/stream/scaladsl/Flow.html" title="akka.stream.scaladsl.Flow"><code>Flow[Message, Message, Mat]</code></a></span>
           |</p>""".stripMargin
       )
   }
@@ -171,8 +171,8 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
     markdown("@apidoc[Marshaller[Try[A], B]]") shouldEqual
       html(
         """<p><span class="group-java">
-          |<a href="https://doc.akka.io/japi/akka-http/current/?akka/http/javadsl/marshalling/Marshaller.html">Marshaller&lt;Try&lt;A&gt;, B&gt;</a></span><span class="group-scala">
-          |<a href="https://doc.akka.io/api/akka-http/current/akka/http/scaladsl/marshalling/Marshaller.html">Marshaller[Try[A], B]</a></span>
+          |<a href="https://doc.akka.io/japi/akka-http/current/?akka/http/javadsl/marshalling/Marshaller.html" title="akka.http.javadsl.marshalling.Marshaller"><code>Marshaller&lt;Try&lt;A&gt;, B&gt;</code></a></span><span class="group-scala">
+          |<a href="https://doc.akka.io/api/akka-http/current/akka/http/scaladsl/marshalling/Marshaller.html" title="akka.http.scaladsl.marshalling.Marshaller"><code>Marshaller[Try[A], B]</code></a></span>
           |</p>""".stripMargin
       )
   }

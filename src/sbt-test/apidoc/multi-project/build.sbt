@@ -9,7 +9,7 @@ val docs = project
       "scaladoc.apidoc.base_url" -> "https://localhost:8000",
       "javadoc.apidoc.base_url" -> "https://localhost:8000"
     ),
-    apidocRootPackage := ""
+    apidocRootPackage := "apidoc"
   )
 
 val root = project

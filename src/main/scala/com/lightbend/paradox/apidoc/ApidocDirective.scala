@@ -18,7 +18,7 @@ package com.lightbend.paradox.apidoc
 
 import com.lightbend.paradox.markdown.InlineDirective
 import org.pegdown.Printer
-import org.pegdown.ast.{DirectiveNode, TextNode, Visitor}
+import org.pegdown.ast.{DirectiveNode, Visitor}
 
 class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[String, String])
     extends InlineDirective("apidoc") {
@@ -35,8 +35,8 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[
       matched.split('.').last + generics
     def javaLabel(matched: String): String =
       scalaLabel(matched)
-        .replaceAll("\\[", "&lt;")
-        .replaceAll("\\]", "&gt;")
+        .replaceAll("\\[", "<")
+        .replaceAll("\\]", ">")
         .replaceAll("_", "?")
 
     override def toString =
@@ -80,9 +80,14 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[
     }
   }
 
-  def syntheticNode(group: String, doctype: String, label: String, fqcn: String, node: DirectiveNode): DirectiveNode = {
-    val syntheticSource = new DirectiveNode.Source.Direct(fqcn)
-    val attributes      = new org.pegdown.ast.DirectiveAttributes.AttributeMap()
+  private def syntheticNode(
+      group: String,
+      doctype: String,
+      label: String,
+      fqcn: String,
+      node: DirectiveNode
+  ): DirectiveNode = {
+    val attributes = new org.pegdown.ast.DirectiveAttributes.AttributeMap()
     new DirectiveNode(
       DirectiveNode.Format.Inline,
       group,
@@ -94,10 +99,10 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[
         DirectiveNode.Format.Inline,
         doctype + "doc",
         label,
-        syntheticSource,
+        new DirectiveNode.Source.Direct(fqcn),
         node.attributes,
-        fqcn,
-        new TextNode(label)
+        label, // contents
+        null
       )
     )
   }
