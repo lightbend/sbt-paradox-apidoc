@@ -48,6 +48,11 @@ produce an unambigious result, you will have to use the FQCN.
 `   * Scala: Replicator - `akka/cluster/ddata/typed/scaladsl/Replicator$.html`
     * Java: Replicator - `akka/cluster/ddata/typed/javadsl/Replicator.html`
 
+* `@apidoc[akka.stream.(javadsl|scaladsl).Concat]` (The classes exist in even more places.)
+    * classes: `akka.stream.impl.Concat`, `akka.stream.scaladsl.Concat$`, `akka.stream.scaladsl.Concat`, `akka.stream.javadsl.Concat$`
+    * Scala: Concat - `akka/stream/scaladsl/Concat.html`
+    * Java: Concat - `akka/stream/javadsl/Concat.html`
+
 * `@apidoc[ClusterClient$]` (Link to scala object.)
     * classes: `akka.cluster.client.ClusterClient`
     * Scala: ClusterClient - `akka/cluster/client/ClusterClient$.html`
