@@ -140,10 +140,10 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[
     matches.size match {
       case 0 =>
         throw new java.lang.IllegalStateException(s"No matches found for $query")
-      case 1 if matches(0).contains("adsl") =>
-        throw new java.lang.IllegalStateException(s"Match for $query only found in one language: ${matches(0)}")
+      case 1 if matches.head.contains("adsl") && query.pattern != matches.head =>
+        throw new java.lang.IllegalStateException(s"Match for $query only found in one language: ${matches.head}")
       case 1 =>
-        val pkg = matches(0)
+        val pkg = matches.head
         syntheticNode("scala", "scala", query.scalaLabel(pkg), pkg + scalaClassSuffix, sAnchor, node).accept(visitor)
         if (hasJavadocUrl(pkg)) {
           syntheticNode("java", "java", query.javaLabel(pkg), pkg, jAnchor, node).accept(visitor)
@@ -165,7 +165,7 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[
       case n =>
         throw new java.lang.IllegalStateException(
           s"$n matches found for $query, but not javadsl/scaladsl: ${matches.mkString(", ")}. " +
-              s"You may want to use the fully qualified class name as @apidoc[fqcn] instead of @apidoc[$query]."
+              s"You may want to use the fully qualified class name as @apidoc[fqcn] instead of @apidoc[$query]. See https://github.com/lightbend/sbt-paradox-apidoc#examples"
         )
     }
   }
