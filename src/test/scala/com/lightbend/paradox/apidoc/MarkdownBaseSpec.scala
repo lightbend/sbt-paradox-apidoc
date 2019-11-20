@@ -28,7 +28,6 @@ import java.nio.file._
 import com.lightbend.paradox.markdown._
 
 abstract class MarkdownBaseSpec extends FlatSpec with Matchers {
-
   val markdownReader = new Reader
   val markdownWriter = new Writer
 
@@ -165,5 +164,4 @@ abstract class MarkdownBaseSpec extends FlatSpec with Matchers {
     lazy val getTitle: String  = ""
     lazy val isActive: Boolean = false
   }
-
 }
