@@ -217,5 +217,4 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
           |thingie</p>""".stripMargin
       )
   }
-
 }
