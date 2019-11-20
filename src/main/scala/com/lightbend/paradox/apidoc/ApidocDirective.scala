@@ -64,13 +64,11 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[
         Query(Some(labelPattern), pattern, generics, linkToObject = false)
     }
 
-    private def splitGenerics(label: String) = {
-      val (pattern, generics) = label.indexOf('[') match {
+    private def splitGenerics(label: String): (String, String) =
+      label.indexOf('[') match {
         case -1 => (label, "")
         case n => label.replaceAll("\\\\_", "_").splitAt(n)
       }
-      (pattern, generics)
-    }
   }
 
   def render(node: DirectiveNode, visitor: Visitor, printer: Printer): Unit = {
