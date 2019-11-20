@@ -30,7 +30,6 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[
   val allClasses = allClassesAndObjects.filterNot(_.endsWith("$"))
 
   private case class Query(pattern: String, generics: String, linkToObject: Boolean) {
-
     def scalaLabel(matched: String): String =
       matched.split('.').last + generics
     def javaLabel(matched: String): String =
@@ -157,5 +156,4 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[
     val javadocUrl = packages.reverse.collectFirst(JavadocBaseUrls)
     javadocUrl.exists(!_.isEmpty)
   }
-
 }
