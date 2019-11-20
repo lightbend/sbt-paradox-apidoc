@@ -18,6 +18,7 @@ package com.lightbend.paradox.apidoc
 
 import com.lightbend.paradox.markdown.InlineDirective
 import org.pegdown.Printer
+import org.pegdown.ast.DirectiveNode.Source
 import org.pegdown.ast.{DirectiveNode, Visitor}
 
 class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[String, String])
@@ -29,9 +30,13 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[
 
   val allClasses = allClassesAndObjects.filterNot(_.endsWith("$"))
 
-  private case class Query(pattern: String, generics: String, linkToObject: Boolean) {
+  private case class Query(label: Option[String], pattern: String, generics: String, linkToObject: Boolean) {
     def scalaLabel(matched: String): String =
-      matched.split('.').last + generics
+      label match {
+        case None => matched.split('.').last + generics
+        case Some(la) => la + generics
+      }
+
     def javaLabel(matched: String): String =
       scalaLabel(matched)
         .replaceAll("\\[", "<")
@@ -44,19 +49,33 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[
   }
   private object Query {
     def apply(label: String): Query = {
-      val (pattern, generics) = label.indexOf('[') match {
+      val (pattern, generics) = splitGenerics(label)
+      if (pattern.endsWith("$"))
+        Query(None, pattern.init, generics, linkToObject = true)
+      else
+        Query(None, pattern, generics, linkToObject = false)
+    }
+
+    def apply(label: String, pattern: String): Query = {
+      val (labelPattern, generics) = splitGenerics(label)
+      if (pattern.endsWith("$"))
+        Query(Some(labelPattern), pattern.init, generics, linkToObject = true)
+      else
+        Query(Some(labelPattern), pattern, generics, linkToObject = false)
+    }
+
+    private def splitGenerics(label: String): (String, String) =
+      label.indexOf('[') match {
         case -1 => (label, "")
         case n => label.replaceAll("\\\\_", "_").splitAt(n)
       }
-      if (pattern.endsWith("$"))
-        Query(pattern.init, generics, linkToObject = true)
-      else
-        Query(pattern, generics, linkToObject = false)
-    }
   }
 
   def render(node: DirectiveNode, visitor: Visitor, printer: Printer): Unit = {
-    val query = Query(node.label)
+    val query = node.source match {
+      case Source.Empty | _: Source.Ref => Query(node.label)
+      case s: Source.Direct => Query(node.label, s.value)
+    }
     if (query.pattern.contains('.')) {
       if (allClasses.contains(query.pattern)) {
         renderMatches(query, Seq(query.pattern), node, visitor, printer)
@@ -84,6 +103,7 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[
       doctype: String,
       label: String,
       fqcn: String,
+      anchor: String,
       node: DirectiveNode
   ): DirectiveNode = {
     val attributes = new org.pegdown.ast.DirectiveAttributes.AttributeMap()
@@ -98,7 +118,7 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[
         DirectiveNode.Format.Inline,
         doctype + "doc",
         label,
-        new DirectiveNode.Source.Direct(fqcn),
+        new DirectiveNode.Source.Direct(fqcn + anchor),
         node.attributes,
         label, // contents
         null
@@ -114,6 +134,8 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[
       printer: Printer
   ): Unit = {
     val scalaClassSuffix = if (query.linkToObject) "$" else ""
+    val sAnchor          = node.attributes.value("scala", "")
+    val jAnchor          = node.attributes.value("java", "")
 
     matches.size match {
       case 0 =>
@@ -122,20 +144,22 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[
         throw new java.lang.IllegalStateException(s"Match for $query only found in one language: ${matches(0)}")
       case 1 =>
         val pkg = matches(0)
-        syntheticNode("scala", "scala", query.scalaLabel(pkg), pkg + scalaClassSuffix, node).accept(visitor)
-        if (hasJavadocUrl(pkg))
-          syntheticNode("java", "java", query.javaLabel(pkg), pkg, node).accept(visitor)
-        else
-          syntheticNode("java", "scala", query.scalaLabel(pkg), pkg + scalaClassSuffix, node).accept(visitor)
+        syntheticNode("scala", "scala", query.scalaLabel(pkg), pkg + scalaClassSuffix, sAnchor, node).accept(visitor)
+        if (hasJavadocUrl(pkg)) {
+          syntheticNode("java", "java", query.javaLabel(pkg), pkg, jAnchor, node).accept(visitor)
+        } else
+          syntheticNode("java", "scala", query.scalaLabel(pkg), pkg + scalaClassSuffix, jAnchor, node).accept(visitor)
       case 2 if matches.forall(_.contains("adsl")) =>
         matches.foreach(pkg => {
           if (!pkg.contains("javadsl"))
-            syntheticNode("scala", "scala", query.scalaLabel(pkg), pkg + scalaClassSuffix, node).accept(visitor)
+            syntheticNode("scala", "scala", query.scalaLabel(pkg), pkg + scalaClassSuffix, sAnchor, node)
+              .accept(visitor)
           if (!pkg.contains("scaladsl")) {
             if (hasJavadocUrl(pkg))
-              syntheticNode("java", "java", query.javaLabel(pkg), pkg, node).accept(visitor)
+              syntheticNode("java", "java", query.javaLabel(pkg), pkg, jAnchor, node).accept(visitor)
             else
-              syntheticNode("java", "scala", query.scalaLabel(pkg), pkg + scalaClassSuffix, node).accept(visitor)
+              syntheticNode("java", "scala", query.scalaLabel(pkg), pkg + scalaClassSuffix, jAnchor, node)
+                .accept(visitor)
           }
         })
       case n =>

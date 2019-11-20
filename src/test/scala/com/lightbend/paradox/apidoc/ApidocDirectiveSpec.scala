@@ -59,6 +59,7 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
   )
 
   implicit val context = writerContextWithProperties(
+    "javadoc.link_style" -> "frames",
     "scaladoc.akka.base_url" -> "https://doc.akka.io/api/akka/2.5",
     "scaladoc.akka.http.base_url" -> "https://doc.akka.io/api/akka-http/current",
     "javadoc.akka.base_url" -> "https://doc.akka.io/japi/akka/2.5",
@@ -127,7 +128,7 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
       )
   }
 
-  it should "find a class by partiql fqdn" in {
+  it should "find a class by partial fqcn" in {
     markdown("@apidoc[actor.typed.ActorRef]") shouldEqual
       html(
         """<p><span class="group-scala">
@@ -174,6 +175,46 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
           |<a href="https://doc.akka.io/japi/akka-http/current/?akka/http/javadsl/marshalling/Marshaller.html" title="akka.http.javadsl.marshalling.Marshaller"><code>Marshaller&lt;Try&lt;A&gt;, B&gt;</code></a></span><span class="group-scala">
           |<a href="https://doc.akka.io/api/akka-http/current/akka/http/scaladsl/marshalling/Marshaller.html" title="akka.http.scaladsl.marshalling.Marshaller"><code>Marshaller[Try[A], B]</code></a></span>
           |</p>""".stripMargin
+      )
+  }
+
+  "Anchor attributes" should "be used" in {
+    markdown("""The @apidoc[Flow] { scala="#method():Unit" java="#method()" } thingie""") shouldEqual
+      html(
+        """<p>The <span class="group-java">
+          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/stream/javadsl/Flow.html#method()" title="akka.stream.javadsl.Flow"><code>Flow</code></a></span><span class="group-scala">
+          |<a href="https://doc.akka.io/api/akka/2.5/akka/stream/scaladsl/Flow.html#method():Unit" title="akka.stream.scaladsl.Flow"><code>Flow</code></a></span>
+          |thingie</p>""".stripMargin
+      )
+  }
+
+  "Directive with label and source" should "use the source as class pattern" in {
+    markdown("The @apidoc[TheClass.method](Flow) { .scaladoc a=1 } thingie") shouldEqual
+      html(
+        """<p>The <span class="group-java">
+          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/stream/javadsl/Flow.html" title="akka.stream.javadsl.Flow"><code>TheClass.method</code></a></span><span class="group-scala">
+          |<a href="https://doc.akka.io/api/akka/2.5/akka/stream/scaladsl/Flow.html" title="akka.stream.scaladsl.Flow"><code>TheClass.method</code></a></span>
+          |thingie</p>""".stripMargin
+      )
+  }
+
+  it should "adapt generics notation from the label" in {
+    markdown("The @apidoc[TheClass[File].method[String]](Flow) { .scaladoc a=1 } thingie") shouldEqual
+      html(
+        """<p>The <span class="group-java">
+          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/stream/javadsl/Flow.html" title="akka.stream.javadsl.Flow"><code>TheClass&lt;File&gt;.method&lt;String&gt;</code></a></span><span class="group-scala">
+          |<a href="https://doc.akka.io/api/akka/2.5/akka/stream/scaladsl/Flow.html" title="akka.stream.scaladsl.Flow"><code>TheClass[File].method[String]</code></a></span>
+          |thingie</p>""".stripMargin
+      )
+  }
+
+  it should "use anchors" in {
+    markdown("""The @apidoc[TheClass[File].method[String]](Flow) { scala="#method():Unit" java="#method()" } thingie""") shouldEqual
+      html(
+        """<p>The <span class="group-java">
+          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/stream/javadsl/Flow.html#method()" title="akka.stream.javadsl.Flow"><code>TheClass&lt;File&gt;.method&lt;String&gt;</code></a></span><span class="group-scala">
+          |<a href="https://doc.akka.io/api/akka/2.5/akka/stream/scaladsl/Flow.html#method():Unit" title="akka.stream.scaladsl.Flow"><code>TheClass[File].method[String]</code></a></span>
+          |thingie</p>""".stripMargin
       )
   }
 }
