@@ -49,10 +49,7 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[
   }
   private object Query {
     def apply(label: String): Query = {
-      val (pattern, generics) = label.indexOf('[') match {
-        case -1 => (label, "")
-        case n => label.replaceAll("\\\\_", "_").splitAt(n)
-      }
+      val (pattern, generics) = splitGenerics(label)
       if (pattern.endsWith("$"))
         Query(None, pattern.init, generics, linkToObject = true)
       else
@@ -60,16 +57,20 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[
     }
 
     def apply(label: String, pattern: String): Query = {
-      val (labelPattern, generics) = label.indexOf('[') match {
-        case -1 => (label, "")
-        case n => label.replaceAll("\\\\_", "_").splitAt(n)
-      }
+      val (labelPattern, generics) = splitGenerics(label)
       if (pattern.endsWith("$"))
         Query(Some(labelPattern), pattern.init, generics, linkToObject = true)
       else
         Query(Some(labelPattern), pattern, generics, linkToObject = false)
     }
 
+    private def splitGenerics(label: String) = {
+      val (pattern, generics) = label.indexOf('[') match {
+        case -1 => (label, "")
+        case n => label.replaceAll("\\\\_", "_").splitAt(n)
+      }
+      (pattern, generics)
+    }
   }
 
   def render(node: DirectiveNode, visitor: Visitor, printer: Printer): Unit = {
