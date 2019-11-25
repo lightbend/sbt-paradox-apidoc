@@ -86,7 +86,7 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
             val regex = (query.pattern.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*") + "$").r
             allClasses.filter(cls => regex.findFirstMatchIn(cls).isDefined) match {
               case Seq() =>
-                throw new java.lang.IllegalStateException(s"Class not found for @apidoc[$query]")
+                ctx.error(s"Class not found for @apidoc[$query]", node)
               case results =>
                 renderMatches(query, results, node, visitor, printer)
             }
@@ -141,8 +141,9 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
       case 0 =>
         ctx.error(s"No matches found for apidoc query [$query]", node)
       case 1 if matches(0).contains("adsl") =>
-        throw new java.lang.IllegalStateException(
-          s"Match for apidoc query [$query] only found in one language: ${matches(0)}"
+        ctx.error(
+          s"Match for apidoc query [$query] only found in one language: ${matches(0)}",
+          node
         )
       case 1 =>
         val pkg = matches(0)
@@ -165,9 +166,10 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
           }
         })
       case n =>
-        throw new java.lang.IllegalStateException(
+        ctx.error(
           s"$n matches found for $query, but not javadsl/scaladsl: ${matches.mkString(", ")}. " +
-              s"You may want to use the fully qualified class name as @apidoc[fqcn] instead of @apidoc[$query]."
+              s"You may want to use the fully qualified class name as @apidoc[fqcn] instead of @apidoc[$query].",
+          node
         )
     }
   }

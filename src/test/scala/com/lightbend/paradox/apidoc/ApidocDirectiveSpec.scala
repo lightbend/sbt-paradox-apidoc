@@ -114,7 +114,7 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
   }
 
   it should "throw an exception when two matches found but javadsl/scaladsl is not in their packages" in {
-    val thrown = the[IllegalStateException] thrownBy markdown("@apidoc[ActorRef]")
+    val thrown = the[ParadoxException] thrownBy markdown("@apidoc[ActorRef]")
     thrown.getMessage shouldEqual
       "2 matches found for ActorRef, but not javadsl/scaladsl: akka.actor.ActorRef, akka.actor.typed.ActorRef. You may want to use the fully qualified class name as @apidoc[fqcn] instead of @apidoc[ActorRef]."
   }
