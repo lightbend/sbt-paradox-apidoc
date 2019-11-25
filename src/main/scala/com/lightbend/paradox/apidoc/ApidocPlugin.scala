@@ -55,7 +55,7 @@ object ApidocPlugin extends AutoPlugin {
           Def.task {
             Seq(
               { ctx: Writer.Context =>
-                new ApidocDirective(allClasses, ctx.properties)
+                new ApidocDirective(allClasses, ctx)
               }
             )
           }

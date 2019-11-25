@@ -17,14 +17,14 @@
 package com.lightbend.paradox.apidoc
 
 import com.lightbend.paradox.markdown.InlineDirective
+import com.lightbend.paradox.markdown.Writer
 import org.pegdown.Printer
 import org.pegdown.ast.DirectiveNode.Source
 import org.pegdown.ast.{DirectiveNode, Visitor}
 
-class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[String, String])
-    extends InlineDirective("apidoc") {
+class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Context) extends InlineDirective("apidoc") {
   final val JavadocProperty = raw"""javadoc\.(.*)\.base_url""".r
-  final val JavadocBaseUrls = properties.collect {
+  final val JavadocBaseUrls = ctx.properties.collect {
     case (JavadocProperty(pkg), url) => pkg -> url
   }
 
@@ -139,9 +139,11 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], properties: Map[
 
     matches.size match {
       case 0 =>
-        throw new java.lang.IllegalStateException(s"No matches found for $query")
+        ctx.error(s"No matches found for apidoc query [$query]", node)
       case 1 if matches(0).contains("adsl") =>
-        throw new java.lang.IllegalStateException(s"Match for $query only found in one language: ${matches(0)}")
+        throw new java.lang.IllegalStateException(
+          s"Match for apidoc query [$query] only found in one language: ${matches(0)}"
+        )
       case 1 =>
         val pkg = matches(0)
         syntheticNode("scala", "scala", query.scalaLabel(pkg), pkg + scalaClassSuffix, sAnchor, node).accept(visitor)
