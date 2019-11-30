@@ -19,15 +19,16 @@ package com.lightbend.paradox.apidoc
 import com.lightbend.paradox.tree.Tree.{Forest, Location}
 import java.io.{File, PrintWriter}
 
-import org.scalatest.{FlatSpec, Matchers}
 import com.lightbend.paradox.template.PageTemplate
 import com.lightbend.paradox.PrintlnLogger
 import com.lightbend.paradox.ThrowingErrorContext
 import java.nio.file._
 
 import com.lightbend.paradox.markdown._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-abstract class MarkdownBaseSpec extends FlatSpec with Matchers {
+abstract class MarkdownBaseSpec extends AnyFlatSpec with Matchers {
   val markdownReader = new Reader
   val markdownWriter = new Writer
 
