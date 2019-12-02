@@ -16,6 +16,7 @@
 
 package com.lightbend.paradox.apidoc
 
+import com.lightbend.paradox.ParadoxException
 import com.lightbend.paradox.markdown.Writer
 
 class ApidocDirectiveSpec extends MarkdownBaseSpec {
@@ -53,7 +54,7 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
     verbatimSerializers = Writer.defaultVerbatims,
     serializerPlugins = Writer.defaultPlugins(
       Writer.defaultDirectives ++ Seq(
-            (ctx: Writer.Context) => new ApidocDirective(allClasses, ctx.properties)
+            (ctx: Writer.Context) => new ApidocDirective(allClasses, ctx)
           )
     )
   )
@@ -77,9 +78,9 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
   }
 
   it should "throw an exception when there is no match" in {
-    val thrown = the[IllegalStateException] thrownBy markdown("@apidoc[ThereIsNoSuchClass]")
+    val thrown = the[ParadoxException] thrownBy markdown("@apidoc[ThereIsNoSuchClass]")
     thrown.getMessage shouldEqual
-      "No matches found for ThereIsNoSuchClass"
+      "No matches found for apidoc query [ThereIsNoSuchClass]"
   }
 
   it should "generate markdown correctly when 2 matches found and their package names include javadsl/scaladsl" in {
@@ -113,7 +114,7 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
   }
 
   it should "throw an exception when two matches found but javadsl/scaladsl is not in their packages" in {
-    val thrown = the[IllegalStateException] thrownBy markdown("@apidoc[ActorRef]")
+    val thrown = the[ParadoxException] thrownBy markdown("@apidoc[ActorRef]")
     thrown.getMessage shouldEqual
       "2 matches found for ActorRef, but not javadsl/scaladsl: akka.actor.ActorRef, akka.actor.typed.ActorRef. You may want to use the fully qualified class name as @apidoc[fqcn] instead of @apidoc[ActorRef]."
   }
