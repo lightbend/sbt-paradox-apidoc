@@ -224,8 +224,6 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
       )
   }
 
-
-
   "Directive with label and source" should "use the source as class pattern" in {
     markdown("The @apidoc[TheClass.method](Flow) { .scaladoc a=1 } thingie") shouldEqual
       html(

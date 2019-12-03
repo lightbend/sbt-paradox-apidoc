@@ -37,9 +37,8 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
         case Some(la) => la + generics
       }
 
-    def scalaFqcn(matched: String): String = {
+    def scalaFqcn(matched: String): String =
       matched.replace("$", ".")
-    }
 
     def javaLabel(matched: String): String =
       scalaLabel(matched)
@@ -155,22 +154,36 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
         )
       case 1 =>
         val pkg = matches(0)
-        syntheticNode("scala", "scala", query.scalaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, sAnchor, node).accept(visitor)
+        syntheticNode("scala", "scala", query.scalaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, sAnchor, node)
+          .accept(visitor)
         if (hasJavadocUrl(pkg)) {
           syntheticNode("java", "java", query.javaLabel(pkg), query.javaFqcn(pkg), jAnchor, node).accept(visitor)
         } else
-          syntheticNode("java", "scala", query.javaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, jAnchor, node).accept(visitor)
+          syntheticNode("java", "scala", query.javaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, jAnchor, node)
+            .accept(visitor)
       case 2 if matches.forall(_.contains("adsl")) =>
         matches.foreach(pkg => {
           if (!pkg.contains("javadsl"))
-            syntheticNode("scala", "scala", query.scalaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, sAnchor, node)
-              .accept(visitor)
+            syntheticNode(
+              "scala",
+              "scala",
+              query.scalaLabel(pkg),
+              query.scalaFqcn(pkg) + scalaClassSuffix,
+              sAnchor,
+              node
+            ).accept(visitor)
           if (!pkg.contains("scaladsl")) {
             if (hasJavadocUrl(pkg))
               syntheticNode("java", "java", query.javaLabel(pkg), query.javaFqcn(pkg), jAnchor, node).accept(visitor)
             else
-              syntheticNode("java", "scala", query.javaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, jAnchor, node)
-                .accept(visitor)
+              syntheticNode(
+                "java",
+                "scala",
+                query.javaLabel(pkg),
+                query.scalaFqcn(pkg) + scalaClassSuffix,
+                jAnchor,
+                node
+              ).accept(visitor)
           }
         })
       case n =>
