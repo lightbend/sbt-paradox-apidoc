@@ -33,15 +33,21 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
   private case class Query(label: Option[String], pattern: String, generics: String, linkToObject: Boolean) {
     def scalaLabel(matched: String): String =
       label match {
-        case None => matched.split('.').last + generics
+        case None => matched.split('.').last.replace("$", ".") + generics
         case Some(la) => la + generics
       }
+
+    def scalaFqcn(matched: String): String = {
+      matched.replace("$", ".")
+    }
 
     def javaLabel(matched: String): String =
       scalaLabel(matched)
         .replaceAll("\\[", "<")
         .replaceAll("\\]", ">")
         .replaceAll("_", "?")
+
+    def javaFqcn(matched: String): String = scalaFqcn(matched)
 
     override def toString =
       if (linkToObject) pattern + "$" + generics
@@ -77,10 +83,11 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
       case s: Source.Direct => Query(node.label, s.value)
     }
     if (query.pattern.contains('.')) {
-      if (allClasses.contains(query.pattern)) {
+      val classNameWithDollarForInnerClasses = query.pattern.replaceAll("(\\b[A-Z].+)\\.", "$1\\$")
+      if (allClasses.contains(classNameWithDollarForInnerClasses)) {
         renderMatches(query, Seq(query.pattern), node, visitor, printer)
-      } else
-        allClasses.filter(_.contains(query.pattern)) match {
+      } else {
+        allClasses.filter(_.contains(classNameWithDollarForInnerClasses)) match {
           case Seq() =>
             // No matches? then try globbing
             val regex = (query.pattern.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*") + "$").r
@@ -93,6 +100,7 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
           case results =>
             renderMatches(query, results, node, visitor, printer)
         }
+      }
     } else {
       renderMatches(query, allClasses.filter(_.endsWith('.' + query.pattern)), node, visitor, printer)
     }
@@ -147,21 +155,21 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
         )
       case 1 =>
         val pkg = matches(0)
-        syntheticNode("scala", "scala", query.scalaLabel(pkg), pkg + scalaClassSuffix, sAnchor, node).accept(visitor)
+        syntheticNode("scala", "scala", query.scalaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, sAnchor, node).accept(visitor)
         if (hasJavadocUrl(pkg)) {
-          syntheticNode("java", "java", query.javaLabel(pkg), pkg, jAnchor, node).accept(visitor)
+          syntheticNode("java", "java", query.javaLabel(pkg), query.javaFqcn(pkg), jAnchor, node).accept(visitor)
         } else
-          syntheticNode("java", "scala", query.scalaLabel(pkg), pkg + scalaClassSuffix, jAnchor, node).accept(visitor)
+          syntheticNode("java", "scala", query.javaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, jAnchor, node).accept(visitor)
       case 2 if matches.forall(_.contains("adsl")) =>
         matches.foreach(pkg => {
           if (!pkg.contains("javadsl"))
-            syntheticNode("scala", "scala", query.scalaLabel(pkg), pkg + scalaClassSuffix, sAnchor, node)
+            syntheticNode("scala", "scala", query.scalaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, sAnchor, node)
               .accept(visitor)
           if (!pkg.contains("scaladsl")) {
             if (hasJavadocUrl(pkg))
-              syntheticNode("java", "java", query.javaLabel(pkg), pkg, jAnchor, node).accept(visitor)
+              syntheticNode("java", "java", query.javaLabel(pkg), query.javaFqcn(pkg), jAnchor, node).accept(visitor)
             else
-              syntheticNode("java", "scala", query.scalaLabel(pkg), pkg + scalaClassSuffix, jAnchor, node)
+              syntheticNode("java", "scala", query.javaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, jAnchor, node)
                 .accept(visitor)
           }
         })
