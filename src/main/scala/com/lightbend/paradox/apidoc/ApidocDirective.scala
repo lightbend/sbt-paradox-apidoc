@@ -107,12 +107,11 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
     }
   }
 
-  private def convertToRegex(classNameWithDollarForInnerClasses: String): Regex = {
+  private def convertToRegex(classNameWithDollarForInnerClasses: String): Regex =
     (classNameWithDollarForInnerClasses
       .replaceAll("\\.", "\\\\.")
       .replaceAll("\\*", ".*")
       .replace("$", s"\\$$") + "$").r
-  }
 
   private def scaladocNode(
       group: String,
