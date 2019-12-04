@@ -46,7 +46,10 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
     "akka.stream.javadsl.Flow",
     "akka.stream.javadsl.Flow$",
     "akka.stream.scaladsl.Flow",
-    "akka.stream.scaladsl.Flow$"
+    "akka.stream.scaladsl.Flow$",
+    "akka.kafka.scaladsl.Consumer$Control",
+    "akka.kafka.javadsl.Consumer$Control",
+    "akka.actor.typed.receptionist.Receptionist$Command"
   )
 
   override val markdownWriter = new Writer(
@@ -64,7 +67,9 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
     "scaladoc.akka.base_url" -> "https://doc.akka.io/api/akka/2.5",
     "scaladoc.akka.http.base_url" -> "https://doc.akka.io/api/akka-http/current",
     "javadoc.akka.base_url" -> "https://doc.akka.io/japi/akka/2.5",
-    "javadoc.akka.http.base_url" -> "https://doc.akka.io/japi/akka-http/current"
+    "javadoc.akka.http.base_url" -> "https://doc.akka.io/japi/akka-http/current",
+    "scaladoc.akka.kafka.base_url" -> "https://doc.akka.io/api/alpakka-kafka/current",
+    "javadoc.akka.kafka.base_url" -> ""
   )
 
   "Apidoc directive" should "generate markdown correctly when there is only one match" in {
@@ -116,7 +121,7 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
   it should "throw an exception when two matches found but javadsl/scaladsl is not in their packages" in {
     val thrown = the[ParadoxException] thrownBy markdown("@apidoc[ActorRef]")
     thrown.getMessage shouldEqual
-      "2 matches found for ActorRef, but not javadsl/scaladsl: akka.actor.ActorRef, akka.actor.typed.ActorRef. You may want to use the fully qualified class name as @apidoc[fqcn] instead of @apidoc[ActorRef]."
+      "2 matches found for ActorRef, but not javadsl/scaladsl: akka.actor.ActorRef, akka.actor.typed.ActorRef. You may want to use the fully qualified class name as @apidoc[fqcn] instead of @apidoc[ActorRef]. For examples see https://github.com/lightbend/sbt-paradox-apidoc#examples"
   }
 
   it should "generate markdown correctly when fully qualified class name (fqcn) is specified as @apidoc[fqcn]" in {
@@ -186,6 +191,56 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
           |<a href="https://doc.akka.io/japi/akka/2.5/?akka/stream/javadsl/Flow.html#method()" title="akka.stream.javadsl.Flow"><code>Flow</code></a></span><span class="group-scala">
           |<a href="https://doc.akka.io/api/akka/2.5/akka/stream/scaladsl/Flow.html#method():Unit" title="akka.stream.scaladsl.Flow"><code>Flow</code></a></span>
           |thingie</p>""".stripMargin
+      )
+  }
+
+  "Inner classes" should "be linked (only scaladoc)" in {
+    markdown("@apidoc[Consumer.Control]") shouldEqual
+      html(
+        """<p><span class="group-scala">
+          |<a href="https://doc.akka.io/api/alpakka-kafka/current/akka/kafka/scaladsl/Consumer$$Control.html" title="akka.kafka.scaladsl.Consumer.Control"><code>Consumer.Control</code></a></span><span class="group-java">
+          |<a href="https://doc.akka.io/api/alpakka-kafka/current/akka/kafka/javadsl/Consumer$$Control.html" title="akka.kafka.javadsl.Consumer.Control"><code>Consumer.Control</code></a></span>
+          |</p>""".stripMargin
+      )
+  }
+
+  it should "be linked with a label and generics (only scaladoc)" in {
+    markdown("@apidoc[Consumer.Control[T]](Consumer.Control)") shouldEqual
+      html(
+        """<p><span class="group-scala">
+          |<a href="https://doc.akka.io/api/alpakka-kafka/current/akka/kafka/scaladsl/Consumer$$Control.html" title="akka.kafka.scaladsl.Consumer.Control"><code>Consumer.Control[T]</code></a></span><span class="group-java">
+          |<a href="https://doc.akka.io/api/alpakka-kafka/current/akka/kafka/javadsl/Consumer$$Control.html" title="akka.kafka.javadsl.Consumer.Control"><code>Consumer.Control&lt;T&gt;</code></a></span>
+          |</p>""".stripMargin
+      )
+  }
+
+  it should "be linked with a regex" in {
+    markdown("@apidoc[akka.kafka.(scaladsl|javadsl).Consumer.Control]") shouldEqual
+      html(
+        """<p><span class="group-scala">
+          |<a href="https://doc.akka.io/api/alpakka-kafka/current/akka/kafka/scaladsl/Consumer$$Control.html" title="akka.kafka.scaladsl.Consumer.Control"><code>Consumer.Control</code></a></span><span class="group-java">
+          |<a href="https://doc.akka.io/api/alpakka-kafka/current/akka/kafka/javadsl/Consumer$$Control.html" title="akka.kafka.javadsl.Consumer.Control"><code>Consumer.Control</code></a></span>
+          |</p>""".stripMargin
+      )
+  }
+
+  it should "be linked with a regex and label" in {
+    markdown("@apidoc[Consumer.Control](akka.kafka.(scaladsl|javadsl).Consumer.Control)") shouldEqual
+      html(
+        """<p><span class="group-scala">
+          |<a href="https://doc.akka.io/api/alpakka-kafka/current/akka/kafka/scaladsl/Consumer$$Control.html" title="akka.kafka.scaladsl.Consumer.Control"><code>Consumer.Control</code></a></span><span class="group-java">
+          |<a href="https://doc.akka.io/api/alpakka-kafka/current/akka/kafka/javadsl/Consumer$$Control.html" title="akka.kafka.javadsl.Consumer.Control"><code>Consumer.Control</code></a></span>
+          |</p>""".stripMargin
+      )
+  }
+
+  it should "generate links to inner classes" in {
+    markdown("@apidoc[Receptionist.Command]") shouldEqual
+      html(
+        """<p><span class="group-scala">
+          |<a href="https://doc.akka.io/api/akka/2.5/akka/actor/typed/receptionist/Receptionist$$Command.html" title="akka.actor.typed.receptionist.Receptionist.Command"><code>Receptionist.Command</code></a></span><span class="group-java">
+          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/actor/typed/receptionist/Receptionist.Command.html" title="akka.actor.typed.receptionist.Receptionist.Command"><code>Receptionist.Command</code></a></span>
+          |</p>""".stripMargin
       )
   }
 
