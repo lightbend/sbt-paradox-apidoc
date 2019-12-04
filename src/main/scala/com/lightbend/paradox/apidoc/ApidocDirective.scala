@@ -22,6 +22,8 @@ import org.pegdown.Printer
 import org.pegdown.ast.DirectiveNode.Source
 import org.pegdown.ast.{DirectiveNode, Visitor}
 
+import scala.util.matching.Regex
+
 class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Context) extends InlineDirective("apidoc") {
   final val JavadocProperty = raw"""javadoc\.(.*)\.base_url""".r
   final val JavadocBaseUrls = ctx.properties.collect {
@@ -89,7 +91,7 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
         allClasses.filter(_.contains(classNameWithDollarForInnerClasses)) match {
           case Seq() =>
             // No matches? then try globbing
-            val regex = (query.pattern.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*") + "$").r
+            val regex = convertToRegex(classNameWithDollarForInnerClasses)
             allClasses.filter(cls => regex.findFirstMatchIn(cls).isDefined) match {
               case Seq() =>
                 ctx.error(s"Class not found for @apidoc[$query]", node)
@@ -104,6 +106,28 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
       renderMatches(query, allClasses.filter(_.endsWith('.' + query.pattern)), node, visitor, printer)
     }
   }
+
+  private def convertToRegex(classNameWithDollarForInnerClasses: String): Regex = {
+    (classNameWithDollarForInnerClasses
+      .replaceAll("\\.", "\\\\.")
+      .replaceAll("\\*", ".*")
+      .replace("$", s"\\$$") + "$").r
+  }
+
+  private def scaladocNode(
+      group: String,
+      label: String,
+      fqcn: String,
+      anchor: String,
+      node: DirectiveNode
+  ): DirectiveNode = syntheticNode(group, "scala", label, fqcn, anchor, node)
+
+  private def javadocNode(
+      label: String,
+      fqcn: String,
+      anchor: String,
+      node: DirectiveNode
+  ): DirectiveNode = syntheticNode("java", "java", label, fqcn, anchor, node)
 
   private def syntheticNode(
       group: String,
@@ -154,42 +178,31 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
         )
       case 1 =>
         val pkg = matches(0)
-        syntheticNode("scala", "scala", query.scalaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, sAnchor, node)
+        scaladocNode("scala", query.scalaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, sAnchor, node)
           .accept(visitor)
         if (hasJavadocUrl(pkg)) {
-          syntheticNode("java", "java", query.javaLabel(pkg), query.javaFqcn(pkg), jAnchor, node).accept(visitor)
+          javadocNode(query.javaLabel(pkg), query.javaFqcn(pkg), jAnchor, node).accept(visitor)
         } else
-          syntheticNode("java", "scala", query.javaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, jAnchor, node)
+          scaladocNode("java", query.javaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, jAnchor, node)
             .accept(visitor)
       case 2 if matches.forall(_.contains("adsl")) =>
         matches.foreach(pkg => {
           if (!pkg.contains("javadsl"))
-            syntheticNode(
-              "scala",
-              "scala",
-              query.scalaLabel(pkg),
-              query.scalaFqcn(pkg) + scalaClassSuffix,
-              sAnchor,
-              node
-            ).accept(visitor)
+            scaladocNode("scala", query.scalaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, sAnchor, node)
+              .accept(visitor)
           if (!pkg.contains("scaladsl")) {
             if (hasJavadocUrl(pkg))
-              syntheticNode("java", "java", query.javaLabel(pkg), query.javaFqcn(pkg), jAnchor, node).accept(visitor)
+              javadocNode(query.javaLabel(pkg), query.javaFqcn(pkg), jAnchor, node).accept(visitor)
             else
-              syntheticNode(
-                "java",
-                "scala",
-                query.javaLabel(pkg),
-                query.scalaFqcn(pkg) + scalaClassSuffix,
-                jAnchor,
-                node
-              ).accept(visitor)
+              scaladocNode("java", query.javaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, jAnchor, node)
+                .accept(visitor)
           }
         })
       case n =>
         ctx.error(
           s"$n matches found for $query, but not javadsl/scaladsl: ${matches.mkString(", ")}. " +
-              s"You may want to use the fully qualified class name as @apidoc[fqcn] instead of @apidoc[$query].",
+              s"You may want to use the fully qualified class name as @apidoc[fqcn] instead of @apidoc[$query]. " +
+              s"For examples see https://github.com/lightbend/sbt-paradox-apidoc#examples",
           node
         )
     }

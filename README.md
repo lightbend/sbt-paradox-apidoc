@@ -38,6 +38,11 @@ produce an unambigious result, you will have to use the FQCN.
     * Scala: Flow - `akka/stream/scaladsl/Flow.html`
     * Java: Flow -  `akka/stream/javadsl/Flow.html`
 
+* `@apidoc[Receptionist.Command]` (An inner class.)
+    * classes: `akka.actor.typed.receptionist.Receptionist$Command`
+    * Scala: Receptionist.Command - `akka/actor/typed/receptionist/Receptionist$$Command.html`
+    * Java: Receptionist.Command - `akka/actor/typed/receptionist/Receptionist.Command.html`
+
 * `@apidoc[Marshaller]` (The scaladoc/javadoc split can be on different package depth.)
     * classes: `akka.http.scaladsl.marshalling.Marshaller`, `akka.http.javadsl.marshalling.Marshaller`
     * Scala: Marshaller - `akka/http/scaladsl/marshalling/Marshaller.html`
@@ -58,7 +63,7 @@ produce an unambigious result, you will have to use the FQCN.
     * Scala: ClusterClient - `akka/cluster/client/ClusterClient$.html`
     * Java: ClusterClient - `akka/cluster/client/ClusterClient.html`
 
-* `@apidoc[Source[ServerSentEvent, \_]]` (Show type paramters.)
+* `@apidoc[Source[ServerSentEvent, \_]]` (Show type parameters.)
     * classes: `akka.stream.scaladsl.Source` - `akka.stream.javadsl.Source`
     * Scala: Source\[ServerSentEvent, _\] - `akka/stream/scaladsl/Source.html`
     * Java: Source\<ServerSentEvent, ?\> - `akka/stream/javadsl/Source.html`
