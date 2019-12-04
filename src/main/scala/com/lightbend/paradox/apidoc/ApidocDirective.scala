@@ -94,7 +94,7 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
             val regex = convertToRegex(classNameWithDollarForInnerClasses)
             allClasses.filter(cls => regex.findFirstMatchIn(cls).isDefined) match {
               case Seq() =>
-                ctx.error(s"Class not found for @apidoc[$query]", node)
+                ctx.error(s"Class not found for @apidoc[$query] (pattern $regex)", node)
               case results =>
                 renderMatches(query, results, node, visitor, printer)
             }
@@ -111,7 +111,7 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
     (classNameWithDollarForInnerClasses
       .replaceAll("\\.", "\\\\.")
       .replaceAll("\\*", ".*")
-      .replace("$", s"\\$$") + "$").r
+      .replaceAll("\\$", "\\\\\\$") + "$").r
 
   private def scaladocNode(
       group: String,
