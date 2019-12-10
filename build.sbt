@@ -37,8 +37,8 @@ scalafmtOnCompile := true
 
 enablePlugins(SbtPlugin)
 scriptedLaunchOpts += ("-Dproject.version=" + version.value)
-scriptedLaunchOpts ++= java.lang.management.ManagementFactory.getRuntimeMXBean.getInputArguments.asScala.filter(
-  a => Seq("-Xmx", "-Xms", "-XX", "-Dfile").exists(a.startsWith)
+scriptedLaunchOpts ++= java.lang.management.ManagementFactory.getRuntimeMXBean.getInputArguments.asScala.filter(a =>
+  Seq("-Xmx", "-Xms", "-XX", "-Dfile").exists(a.startsWith)
 )
 
 packageSrc / publishArtifact := false
