@@ -273,4 +273,22 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
           |thingie</p>""".stripMargin
       )
   }
+
+  it should "support complex anchors" in {
+    markdown(
+      """Signature: @apidoc[Flow.fromSinkAndSource](Flow$) { scala="#fromSinkAndSource[I,O](sink:akka.stream.Graph[akka.stream.SinkShape[I],_],source:akka.stream.Graph[akka.stream.SourceShape[O],_]):akka.stream.scaladsl.Flow[I,O,akka.NotUsed]" java="#fromSinkAndSource(akka.stream.Graph,akka.stream.Graph)" }"""
+    ) shouldEqual
+      html(
+        """<p>Signature: <span class="group-java"><a href="https://doc.akka.io/japi/akka/2.5/?akka/stream/javadsl/Flow.html#fromSinkAndSource(akka.stream.Graph,akka.stream.Graph)" title="akka.stream.javadsl.Flow"><code>Flow.fromSinkAndSource</code></a></span><span class="group-scala"><a href="https://doc.akka.io/api/akka/2.5/akka/stream/scaladsl/Flow$.html#fromSinkAndSource[I,O](sink:akka.stream.Graph[akka.stream.SinkShape[I],_],source:akka.stream.Graph[akka.stream.SourceShape[O],_]):akka.stream.scaladsl.Flow[I,O,akka.NotUsed]" title="akka.stream.scaladsl.Flow"><code>Flow.fromSinkAndSource</code></a></span></p>"""
+      )
+  }
+
+  it should "support complex anchors using a single parameter for java and scala" in {
+    markdown(
+      """Signature: @apidoc[Flow.fromSinkAndSource](Flow$) { method="#fromSinkAndSource[I,O](sink:akka.stream.Graph[akka.stream.SinkShape[I],_],source:akka.stream.Graph[akka.stream.SourceShape[O],_]):akka.stream.scaladsl.Flow[I,O,akka.NotUsed]" }"""
+    ) shouldEqual
+      html(
+        """<p>Signature: <span class="group-java"><a href="https://doc.akka.io/japi/akka/2.5/?akka/stream/javadsl/Flow.html#fromSinkAndSource(akka.stream.Graph,akka.stream.Graph)" title="akka.stream.javadsl.Flow"><code>Flow.fromSinkAndSource</code></a></span><span class="group-scala"><a href="https://doc.akka.io/api/akka/2.5/akka/stream/scaladsl/Flow$.html#fromSinkAndSource[I,O](sink:akka.stream.Graph[akka.stream.SinkShape[I],_],source:akka.stream.Graph[akka.stream.SourceShape[O],_]):akka.stream.scaladsl.Flow[I,O,akka.NotUsed]" title="akka.stream.scaladsl.Flow"><code>Flow.fromSinkAndSource</code></a></span></p>"""
+      )
+  }
 }

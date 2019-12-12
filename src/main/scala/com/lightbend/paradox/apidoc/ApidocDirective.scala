@@ -164,8 +164,8 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
       printer: Printer
   ): Unit = {
     val scalaClassSuffix = if (query.linkToObject) "$" else ""
-    val sAnchor          = node.attributes.value("scala", "")
-    val jAnchor          = node.attributes.value("java", "")
+    val sAnchor          = node.attributes.value("scala", node.attributes.value("method", ""))
+    val jAnchor          = node.attributes.value("java", convertFragment(node.attributes.value("method", "")))
 
     matches.size match {
       case 0 =>
@@ -205,6 +205,38 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
           node
         )
     }
+  }
+
+  /**
+   * If a scaladoc-style fragment is found, convert it to javadoc-style
+   */
+  private[apidoc] def convertFragment(fragment: String): String = fragment match {
+    case "" => ""
+    case f =>
+      def parseMethodName(in: String) = (in.takeWhile(_.isLetterOrDigit), in.dropWhile(_.isLetterOrDigit))
+      def dropGenerics(in: String, depth: Int = 0): String =
+        if (in(0) == '[')
+          dropGenerics(in.drop(1), depth + 1)
+        else if (in(0) == ']') {
+          if (depth == 1)
+            in.drop(1)
+          else
+            dropGenerics(in.drop(1), depth - 1)
+        } else
+          dropGenerics(in.drop(1), depth)
+      def getParameters(in: String): List[String] =
+        if (in(0) == '(' || in(0) == ',') {
+          val withoutName   = in.dropWhile(_ != ':').drop(1)
+          val parameterType = withoutName.takeWhile(c => c.isLetterOrDigit || c == '.')
+          parameterType +: getParameters(dropGenerics(withoutName.dropWhile(c => c.isLetterOrDigit || c == '.')))
+        } else Nil
+
+      require(f(0) == '#')
+      val (methodName, rest) = parseMethodName(fragment.drop(1))
+      val parameters         = getParameters(dropGenerics(rest))
+      println(parameters)
+
+      s"#${methodName}(${parameters.mkString(",")})"
   }
 
   /**
