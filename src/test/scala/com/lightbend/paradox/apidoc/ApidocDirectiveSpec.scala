@@ -47,6 +47,8 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
     "akka.stream.javadsl.Flow$",
     "akka.stream.scaladsl.Flow",
     "akka.stream.scaladsl.Flow$",
+    "akka.stream.scaladsl.JavaFlowSupport$",
+    "akka.stream.javadsl.JavaFlowSupport",
     "akka.kafka.scaladsl.Consumer$Control",
     "akka.kafka.javadsl.Consumer$Control",
     "akka.actor.typed.receptionist.Receptionist$Command"
@@ -150,6 +152,16 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
         """<p><span class="group-scala">
           |<a href="https://doc.akka.io/api/akka/2.5/akka/cluster/client/ClusterClient$.html" title="akka.cluster.client.ClusterClient"><code>ClusterClient</code></a></span><span class="group-java">
           |<a href="https://doc.akka.io/japi/akka/2.5/?akka/cluster/client/ClusterClient.html" title="akka.cluster.client.ClusterClient"><code>ClusterClient</code></a></span>
+          |</p>""".stripMargin
+      )
+  }
+
+  it should "generate markdown correctly for scaladsl `object` and javadsl `class`" in {
+    markdown("@apidoc[JavaFlowSupport]") shouldEqual
+      html(
+        """<p><span class="group-scala">
+          |<a href="https://doc.akka.io/api/akka/2.5/akka/stream/scaladsl/JavaFlowSupport$.html" title="akka.stream.scaladsl.JavaFlowSupport"><code>JavaFlowSupport</code></a></span><span class="group-java">
+          |<a href="https://doc.akka.io/japi/akka/2.5/?akka/stream/javadsl/JavaFlowSupport.html" title="akka.stream.javadsl.JavaFlowSupport"><code>JavaFlowSupport</code></a></span>
           |</p>""".stripMargin
       )
   }
