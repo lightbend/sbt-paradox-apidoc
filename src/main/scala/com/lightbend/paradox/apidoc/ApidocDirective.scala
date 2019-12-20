@@ -16,8 +16,7 @@
 
 package com.lightbend.paradox.apidoc
 
-import com.lightbend.paradox.markdown.InlineDirective
-import com.lightbend.paradox.markdown.Writer
+import com.lightbend.paradox.markdown.{InlineDirective, Writer}
 import org.pegdown.Printer
 import org.pegdown.ast.DirectiveNode.Source
 import org.pegdown.ast.{DirectiveNode, Visitor}
@@ -88,7 +87,7 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
       if (allClasses.contains(classNameWithDollarForInnerClasses)) {
         renderMatches(query, Seq(query.pattern), node, visitor, printer)
       } else {
-        allClasses.filter(_.contains(classNameWithDollarForInnerClasses)) match {
+        allClasses.filter(_.endsWith(classNameWithDollarForInnerClasses)) match {
           case Seq() =>
             // No matches? then try globbing
             val regex = convertToRegex(classNameWithDollarForInnerClasses)

@@ -49,6 +49,7 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
     "akka.stream.scaladsl.Flow$",
     "akka.kafka.scaladsl.Consumer$Control",
     "akka.kafka.javadsl.Consumer$Control",
+    "akka.kafka.scaladsl.Consumer$Control$$anonfun$drainAndShutdown$2",
     "akka.actor.typed.receptionist.Receptionist$Command"
   )
 
