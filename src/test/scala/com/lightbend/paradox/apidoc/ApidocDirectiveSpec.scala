@@ -59,9 +59,7 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
     linkRenderer        = Writer.defaultLinks,
     verbatimSerializers = Writer.defaultVerbatims,
     serializerPlugins = Writer.defaultPlugins(
-      Writer.defaultDirectives ++ Seq(
-            (ctx: Writer.Context) => new ApidocDirective(allClasses, ctx)
-          )
+      Writer.defaultDirectives ++ Seq((ctx: Writer.Context) => new ApidocDirective(allClasses, ctx))
     )
   )
 

@@ -199,7 +199,7 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
           scaladocNode("java", query.javaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, jAnchor, node)
             .accept(visitor)
       case 2 if matches.forall(_.contains("adsl")) =>
-        matches.foreach(pkg => {
+        matches.foreach { pkg =>
           if (!pkg.contains("javadsl"))
             scaladocNode("scala", query.scalaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, sAnchor, node)
               .accept(visitor)
@@ -210,7 +210,7 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
               scaladocNode("java", query.javaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, jAnchor, node)
                 .accept(visitor)
           }
-        })
+        }
       case n =>
         ctx.error(
           s"$n matches found for $query, but not javadsl/scaladsl: ${matches.mkString(", ")}. " +
