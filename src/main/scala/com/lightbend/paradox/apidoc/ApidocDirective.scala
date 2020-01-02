@@ -34,12 +34,19 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
   private case class Query(label: Option[String], pattern: String, generics: String, linkToObject: Boolean) {
     def scalaLabel(matched: String): String =
       label match {
-        case None => matched.split('.').last.replace("$", ".") + generics
+        case None =>
+          matched
+            .split('.')
+            .last
+            // replace inner class dots
+            .replaceAll("\\$(.)", ".$1")
+            // remove ending $
+            .replaceAll("\\$$", "") + generics
         case Some(la) => la + generics
       }
 
     def scalaFqcn(matched: String): String =
-      matched.replace("$", ".")
+      matched.replaceAll("\\$(.)", ".$1")
 
     def javaLabel(matched: String): String =
       scalaLabel(matched)
@@ -102,7 +109,15 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
         }
       }
     } else {
-      renderMatches(query, allClasses.filter(_.endsWith('.' + query.pattern)), node, visitor, printer)
+      val className    = '.' + query.pattern
+      val classMatches = allClasses.filter(_.endsWith(className))
+      if (classMatches.size == 1 && classMatches(0).contains(".javadsl.")) {
+        val objectName = className + '$'
+        val allMatches = allClassesAndObjects.filter { name =>
+          name.endsWith(className) || name.endsWith(objectName)
+        }
+        renderMatches(query, allMatches, node, visitor, printer)
+      } else renderMatches(query, classMatches, node, visitor, printer)
     }
   }
 
