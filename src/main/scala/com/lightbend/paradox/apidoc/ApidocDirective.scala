@@ -113,9 +113,7 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
       val classMatches = allClasses.filter(_.endsWith(className))
       if (classMatches.size == 1 && classMatches(0).contains(".javadsl.")) {
         val objectName = className + '$'
-        val allMatches = allClassesAndObjects.filter { name =>
-          name.endsWith(className) || name.endsWith(objectName)
-        }
+        val allMatches = allClassesAndObjects.filter(name => name.endsWith(className) || name.endsWith(objectName))
         renderMatches(query, allMatches, node, visitor, printer)
       } else renderMatches(query, classMatches, node, visitor, printer)
     }
