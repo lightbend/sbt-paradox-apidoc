@@ -53,11 +53,7 @@ object ApidocPlugin extends AutoPlugin {
             .scan()
           val allClasses = scanner.getAllClasses.getNames.asScala.toVector
           Def.task {
-            Seq(
-              { ctx: Writer.Context =>
-                new ApidocDirective(allClasses, ctx)
-              }
-            )
+            Seq((ctx: Writer.Context) => new ApidocDirective(allClasses, ctx))
           }
         }.value
   )
