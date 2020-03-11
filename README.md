@@ -9,9 +9,22 @@ A [paradox](https://github.com/lightbend/paradox/) directive that automatically 
 
 ## Usage
 
+Add the plugin:
+
 ```scala
 addSbtPlugin("com.lightbend.paradox" % "sbt-paradox-apidoc" % "<latest>")
 ```
+
+Configure the `apidocRootPackage` within your paradox settings:
+
+```
+import com.lightbend.paradox.apidoc.ApidocPlugin.autoImport.apidocRootPackage
+
+(...)
+  apidocRootPackage := "akka",
+(...)
+```
+
 
 You can now create 'grouped' javadoc/scaladoc references in paradox like:
 
@@ -78,17 +91,6 @@ produce an unambigious result, you will have to use the FQCN.
     * Scala: method - `akka/stream/scaladsl/Flow.html#method():Unit`
     * Java: method - `akka/stream/javadsl/Flow.html#method()`
 
-
-To limit the packages that are searched for classes, configure the
-`apidocRootPackage` setting:
-
-```
-import com.lightbend.paradox.apidoc.ApidocPlugin.autoImport.apidocRootPackage
-
-(...)
-  apidocRootPackage := "akka",
-(...)
-```
 
 ### When only Scaladoc is generated
 
