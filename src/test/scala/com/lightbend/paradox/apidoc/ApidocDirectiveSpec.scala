@@ -286,12 +286,12 @@ class ApidocDirectiveSpec extends MarkdownBaseSpec {
   }
   it should "use anchors for methods with scala bounded types" in {
     markdown(
-      """The @apidoc[label](Flow) { scala="#method[T%3C:Q[T]]](Flow=%3CUnit):Unit"  java="#method()" } thingie"""
+      """The @apidoc[label](Flow) { scala="#method%5BT%3C:Q[T]]](Flow=%3EUnit):Unit"  java="#method()" } thingie"""
     ) shouldEqual
       html(
         """<p>The <span class="group-java">
           |<a href="https://doc.akka.io/japi/akka/2.5/?akka/stream/javadsl/Flow.html#method()" title="akka.stream.javadsl.Flow"><code>label</code></a></span><span class="group-scala">
-          |<a href="https://doc.akka.io/api/akka/2.5/akka/stream/scaladsl/Flow.html#method[T<:Q[T]]](Flow=%3EUnit):Unit" title="akka.stream.scaladsl.Flow"><code>label</code></a></span>
+          |<a href="https://doc.akka.io/api/akka/2.5/akka/stream/scaladsl/Flow.html#method[T%3C:Q[T]]](Flow=%3EUnit):Unit" title="akka.stream.scaladsl.Flow"><code>label</code></a></span>
           |thingie</p>""".stripMargin
       )
   }

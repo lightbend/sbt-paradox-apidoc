@@ -91,6 +91,21 @@ produce an unambigious result, you will have to use the FQCN.
     * Scala: method - `akka/stream/scaladsl/Flow.html#method():Unit`
     * Java: method - `akka/stream/javadsl/Flow.html#method()`
 
+* `@apidoc[method](Flow) { scala="#method[T]():Unit" java="#method()" }` (Link to method anchors.)
+    * classes: `akka.stream.scaladsl.Flow` - `akka.stream.javadsl.Flow`
+    * Scala: method - `akka/stream/scaladsl/Flow.html#method[T]():Unit`
+    * Java: method - `akka/stream/javadsl/Flow.html#method()`
+
+* `@apidoc[method](Flow) { scala="#method%5BT%3C:S]():Unit" java="#method()" }` (Link to method anchors. Where the method has type bounds.)
+    * classes: `akka.stream.scaladsl.Flow` - `akka.stream.javadsl.Flow`
+    * Scala: method - `akka/stream/scaladsl/Flow.html#method[T<:S]():Unit`
+    * Java: method - `akka/stream/javadsl/Flow.html#method()`
+
+* `@apidoc[method](Flow) { scala="#method(String=%3EInt):Unit" java="#method()" }` (Link to method anchors. Using higher-order function arguments)
+    * classes: `akka.stream.scaladsl.Flow` - `akka.stream.javadsl.Flow`
+    * Scala: method - `akka/stream/scaladsl/Flow.html#method(String=>Int):Unit`
+    * Java: method - `akka/stream/javadsl/Flow.html#method()`
+
 
 ### When only Scaladoc is generated
 
