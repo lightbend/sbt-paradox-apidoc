@@ -16,6 +16,9 @@
 
 package com.lightbend.paradox.apidoc
 
+import com.lightbend.paradox.ParadoxError
+import com.lightbend.paradox.ParadoxException
+import com.lightbend.paradox.markdown.{Url => ParadoxUrl}
 import com.lightbend.paradox.markdown.{InlineDirective, Writer}
 import org.pegdown.Printer
 import org.pegdown.ast.DirectiveNode.Source
@@ -149,6 +152,23 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
       node: DirectiveNode
   ): DirectiveNode = {
     val attributes = new org.pegdown.ast.DirectiveAttributes.AttributeMap()
+    val theUrl     = fqcn + anchor
+    try {
+      ParadoxUrl(theUrl)
+    } catch {
+      case ParadoxUrl.Error(reason) =>
+        val suggestedUrl = theUrl
+          .replace("<", "%3C")
+          .replace(">", "%3E")
+          .replace("[", "%5B")
+        throw new ParadoxException(
+          ParadoxError(
+            s"$reason. Try percent-encoding manually some of the reserved characters, for example: [$suggestedUrl]. See https://github.com/lightbend/sbt-paradox-apidoc/pull/130 for more details.",
+            None,
+            None
+          )
+        )
+    }
     new DirectiveNode(
       DirectiveNode.Format.Inline,
       group,
@@ -160,7 +180,7 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
         DirectiveNode.Format.Inline,
         doctype + "doc",
         label,
-        new DirectiveNode.Source.Direct(fqcn + anchor),
+        new DirectiveNode.Source.Direct(theUrl),
         node.attributes,
         label, // contents
         null
