@@ -10,8 +10,8 @@ name             := "sbt-paradox-apidoc"
 addSbtPlugin(Library.sbtParadox)
 libraryDependencies ++= Seq(
   Library.classgraph,
-  Library.jtidy     % Test,
-  Library.scalatest % Test
+  Library.scalatest % Test,
+  Library.paradoxTestkit % Test
 )
 
 licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0"))

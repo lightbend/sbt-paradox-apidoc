@@ -19,9 +19,12 @@ package com.lightbend.paradox.apidoc
 import java.io.IOException
 
 import com.lightbend.paradox.ParadoxException
-import com.lightbend.paradox.markdown.Writer
+import com.lightbend.paradox.markdown.{MarkdownTestkit, Writer}
 
-class ApidocDirectiveSpec extends MarkdownBaseSpec {
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.flatspec.AnyFlatSpecLike
+
+class ApidocDirectiveSpec extends MarkdownTestkit with Matchers with AnyFlatSpecLike {
   val rootPackage = "akka"
 
   val allClasses = Array(
