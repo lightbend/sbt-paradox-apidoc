@@ -61,7 +61,7 @@ class ApidocDirectiveSpec extends MarkdownTestkit with Matchers with AnyFlatSpec
   )
 
   override val markdownWriter = new Writer(
-    linkRenderer        = Writer.defaultLinks,
+    linkRenderer = Writer.defaultLinks,
     verbatimSerializers = Writer.defaultVerbatims,
     serializerPlugins = Writer.defaultPlugins(
       Writer.defaultDirectives ++ Seq((ctx: Writer.Context) => new ApidocDirective(allClasses, ctx))
@@ -281,7 +281,9 @@ class ApidocDirectiveSpec extends MarkdownTestkit with Matchers with AnyFlatSpec
   }
 
   it should "use anchors" in {
-    markdown("""The @apidoc[TheClass[File].method[String]](Flow) { scala="#method():Unit" java="#method()" } thingie""") shouldEqual
+    markdown(
+      """The @apidoc[TheClass[File].method[String]](Flow) { scala="#method():Unit" java="#method()" } thingie"""
+    ) shouldEqual
       html(
         """<p>The <span class="group-java">
           |<a href="https://doc.akka.io/japi/akka/2.5/?akka/stream/javadsl/Flow.html#method()" title="akka.stream.javadsl.Flow"><code>TheClass&lt;File&gt;.method&lt;String&gt;</code></a></span><span class="group-scala">
@@ -303,16 +305,13 @@ class ApidocDirectiveSpec extends MarkdownTestkit with Matchers with AnyFlatSpec
   }
 
   it should "catch exception on malformed URIs and make suggestions" in {
-    try {
-
-      markdown(
-        """The @apidoc[label](Flow) { scala="#method[ T <: Q[T] ](Flow => Unit):Unit"  java="#method()" } thingie"""
-      )
-    } catch {
-      case t @ ParadoxException(error) => {
+    try markdown(
+      """The @apidoc[label](Flow) { scala="#method[ T <: Q[T] ](Flow => Unit):Unit"  java="#method()" } thingie"""
+    )
+    catch {
+      case t @ ParadoxException(error) =>
         error.msg should include("template resulted in an invalid URL")
         error.msg should include("method%5B T %3C: Q%5BT] ](Flow =%3E Unit):Unit")
-      }
     }
   }
 
