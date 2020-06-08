@@ -20,14 +20,14 @@ import java.io.IOException
 
 import com.lightbend.paradox.ParadoxException
 import com.lightbend.paradox.markdown.{MarkdownTestkit, Writer}
-
+import io.github.classgraph.ScanResult
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.flatspec.AnyFlatSpecLike
 
 class ApidocDirectiveSpec extends MarkdownTestkit with Matchers with AnyFlatSpecLike {
   val rootPackage = "akka"
 
-  val allClasses = Array(
+  val allClasses = Vector(
     "akka.actor.ActorRef",
     "akka.actor.typed.ActorRef",
     "akka.cluster.client.ClusterClient",
@@ -54,6 +54,12 @@ class ApidocDirectiveSpec extends MarkdownTestkit with Matchers with AnyFlatSpec
     "akka.stream.scaladsl.Flow$",
     "akka.stream.scaladsl.JavaFlowSupport$",
     "akka.stream.javadsl.JavaFlowSupport",
+    "akka.kafka.Metadata",
+    "akka.kafka.Metadata$",
+    "akka.kafka.javadsl.Producer",
+    "akka.kafka.javadsl.Producer$",
+    "akka.kafka.scaladsl.Producer",
+    "akka.kafka.scaladsl.Producer$",
     "akka.kafka.scaladsl.Consumer$Control",
     "akka.kafka.javadsl.Consumer$Control",
     "akka.kafka.scaladsl.Consumer$Control$$anonfun$drainAndShutdown$2",
@@ -64,7 +70,13 @@ class ApidocDirectiveSpec extends MarkdownTestkit with Matchers with AnyFlatSpec
     linkRenderer        = Writer.defaultLinks,
     verbatimSerializers = Writer.defaultVerbatims,
     serializerPlugins = Writer.defaultPlugins(
-      Writer.defaultDirectives ++ Seq((ctx: Writer.Context) => new ApidocDirective(allClasses, ctx))
+      Writer.defaultDirectives ++ Seq((ctx: Writer.Context) =>
+            new ApidocDirective(null: ScanResult, allClasses, ctx) {
+              override def containsOnlyStaticForwarders(classname: String): Boolean =
+                "akka.kafka.Metadata" == classname ||
+                  "akka.kafka.scaladsl.Producer" == classname
+            }
+          )
     )
   )
 
@@ -92,6 +104,24 @@ class ApidocDirectiveSpec extends MarkdownTestkit with Matchers with AnyFlatSpec
     val thrown = the[ParadoxException] thrownBy markdown("@apidoc[ThereIsNoSuchClass]")
     thrown.getMessage shouldEqual
       "No matches found for apidoc query [ThereIsNoSuchClass]"
+  }
+
+  it should "fail when pointing to a static-forwarders-only class" in {
+    val thrown = the[ParadoxException] thrownBy markdown("@apidoc[Metadata]")
+    thrown.getMessage shouldEqual
+      "Class `akka.kafka.Metadata` matches @apidoc[Metadata], but is empty, did you intend to link to the object?"
+  }
+
+  it should "fail when pointing to a static-forwarders-only class (in scaladsl/javadsl)" in {
+    val thrown = the[ParadoxException] thrownBy markdown("@apidoc[Producer]")
+    thrown.getMessage shouldEqual
+      "Class `akka.kafka.scaladsl.Producer` matches @apidoc[Producer], but is empty, did you intend to link to the object?"
+  }
+
+  it should "fail when pointing to a static-forwarders-only class (with pattern)" in {
+    val thrown = the[ParadoxException] thrownBy markdown("@apidoc[akka.kafka.(java|scala)dsl.Producer]")
+    thrown.getMessage shouldEqual
+      "Class `akka.kafka.scaladsl.Producer` matches @apidoc[akka.kafka.(java|scala)dsl.Producer], but is empty, did you intend to link to the object?"
   }
 
   it should "generate markdown correctly when 2 matches found and their package names include javadsl/scaladsl" in {

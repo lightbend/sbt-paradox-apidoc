@@ -50,10 +50,11 @@ object ApidocPlugin extends AutoPlugin {
           val scanner = new ClassGraph()
             .whitelistPackages(apidocRootPackage.value)
             .addClassLoader(classLoader)
+            .enableMethodInfo()
             .scan()
           val allClasses = scanner.getAllClasses.getNames.asScala.toVector
           Def.task {
-            Seq((ctx: Writer.Context) => new ApidocDirective(allClasses, ctx))
+            Seq((ctx: Writer.Context) => new ApidocDirective(scanner, allClasses, ctx))
           }
         }.value
   )
