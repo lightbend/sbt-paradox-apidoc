@@ -39,15 +39,13 @@ class ApidocDirective(scanner: ScanResult, allClassesAndObjects: IndexedSeq[Stri
   val allClasses = allClassesAndObjects.filterNot(_.endsWith("$"))
 
   def containsOnlyStaticForwarders(className: String): Boolean = {
-    val info = scanner
-      .getClassInfo(className)
-    info != null &&
-    info.getMethodInfo.asScala
-      .forall(_.isStatic)
+    val info = scanner.getClassInfo(className)
+    info != null && info.isFinal && info.getMethodInfo.asScala.forall(_.isStatic)
   }
 
   private def errorForStaticForwardersOnly(query: Query, node: DirectiveNode, classname: String) =
-    if (!query.linkToObject && containsOnlyStaticForwarders(classname)) {
+    if (!query.linkToObject && containsOnlyStaticForwarders(classname) &&
+        allClassesAndObjects.contains(classname + "$")) {
       ctx.error(
         s"Class `$classname` matches @apidoc[$query], but is empty, did you intend to link to the object?",
         node
