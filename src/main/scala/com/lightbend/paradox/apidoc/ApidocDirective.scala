@@ -20,19 +20,37 @@ import com.lightbend.paradox.ParadoxError
 import com.lightbend.paradox.ParadoxException
 import com.lightbend.paradox.markdown.{Url => ParadoxUrl}
 import com.lightbend.paradox.markdown.{InlineDirective, Writer}
+import io.github.classgraph.ScanResult
 import org.pegdown.Printer
 import org.pegdown.ast.DirectiveNode.Source
 import org.pegdown.ast.{DirectiveNode, Visitor}
 
+import scala.collection.JavaConverters._
+
 import scala.util.matching.Regex
 
-class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Context) extends InlineDirective("apidoc") {
+class ApidocDirective(scanner: ScanResult, allClassesAndObjects: IndexedSeq[String], ctx: Writer.Context)
+    extends InlineDirective("apidoc") {
   final val JavadocProperty = raw"""javadoc\.(.*)\.base_url""".r
   final val JavadocBaseUrls = ctx.properties.collect {
     case (JavadocProperty(pkg), url) => pkg -> url
   }
 
   val allClasses = allClassesAndObjects.filterNot(_.endsWith("$"))
+
+  def containsOnlyStaticForwarders(className: String): Boolean = {
+    val info = scanner.getClassInfo(className)
+    info != null && info.isFinal && info.getMethodInfo.asScala.forall(_.isStatic)
+  }
+
+  private def errorForStaticForwardersOnly(query: Query, node: DirectiveNode, classname: String) =
+    if (!query.linkToObject && containsOnlyStaticForwarders(classname) &&
+        allClassesAndObjects.contains(classname + "$")) {
+      ctx.error(
+        s"Class `$classname` matches @apidoc[$query], but is empty, did you intend to link to the object?",
+        node
+      )
+    }
 
   private case class Query(label: Option[String], pattern: String, generics: String, linkToObject: Boolean) {
     def scalaLabel(matched: String): String =
@@ -111,10 +129,11 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
             renderMatches(query, results, node, visitor, printer)
         }
       }
-    } else {
+    } else { // only a classname
       val className    = '.' + query.pattern
       val classMatches = allClasses.filter(_.endsWith(className))
       if (classMatches.size == 1 && classMatches(0).contains(".javadsl.")) {
+        errorForStaticForwardersOnly(query, node, classMatches(0))
         val objectName = className + '$'
         val allMatches = allClassesAndObjects.filter(name => name.endsWith(className) || name.endsWith(objectName))
         renderMatches(query, allMatches, node, visitor, printer)
@@ -209,6 +228,7 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
         )
       case 1 =>
         val pkg = matches(0)
+        errorForStaticForwardersOnly(query, node, query.scalaFqcn(pkg))
         scaladocNode("scala", query.scalaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, sAnchor, node)
           .accept(visitor)
         if (hasJavadocUrl(pkg)) {
@@ -218,9 +238,11 @@ class ApidocDirective(allClassesAndObjects: IndexedSeq[String], ctx: Writer.Cont
             .accept(visitor)
       case 2 if matches.forall(_.contains("adsl")) =>
         matches.foreach { pkg =>
-          if (!pkg.contains("javadsl"))
+          if (!pkg.contains("javadsl")) {
+            errorForStaticForwardersOnly(query, node, query.scalaFqcn(pkg))
             scaladocNode("scala", query.scalaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, sAnchor, node)
               .accept(visitor)
+          }
           if (!pkg.contains("scaladsl")) {
             if (hasJavadocUrl(pkg))
               javadocNode(query.javaLabel(pkg), query.javaFqcn(pkg), jAnchor, node).accept(visitor)
