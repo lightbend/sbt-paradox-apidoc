@@ -44,13 +44,14 @@ class ApidocDirective(scanner: ScanResult, allClassesAndObjects: IndexedSeq[Stri
   }
 
   private def errorForStaticForwardersOnly(query: Query, node: DirectiveNode, classname: String) =
-    if (!query.linkToObject && containsOnlyStaticForwarders(classname) &&
-        allClassesAndObjects.contains(classname + "$")) {
+    if (
+      !query.linkToObject && containsOnlyStaticForwarders(classname) &&
+      allClassesAndObjects.contains(classname + "$")
+    )
       ctx.error(
         s"Class `$classname` matches @apidoc[$query], but is empty, did you intend to link to the object?",
         node
       )
-    }
 
   private case class Query(label: Option[String], pattern: String, generics: String, linkToObject: Boolean) {
     def scalaLabel(matched: String): String =
@@ -112,9 +113,9 @@ class ApidocDirective(scanner: ScanResult, allClassesAndObjects: IndexedSeq[Stri
     }
     if (query.pattern.contains('.')) {
       val classNameWithDollarForInnerClasses = query.pattern.replaceAll("(\\b[A-Z].+)\\.", "$1\\$")
-      if (allClasses.contains(classNameWithDollarForInnerClasses)) {
+      if (allClasses.contains(classNameWithDollarForInnerClasses))
         renderMatches(query, Seq(query.pattern), node, visitor, printer)
-      } else {
+      else
         allClasses.filter(_.endsWith(classNameWithDollarForInnerClasses)) match {
           case Seq() =>
             // No matches? then try globbing
@@ -128,7 +129,6 @@ class ApidocDirective(scanner: ScanResult, allClassesAndObjects: IndexedSeq[Stri
           case results =>
             renderMatches(query, results, node, visitor, printer)
         }
-      }
     } else { // only a classname
       val className    = '.' + query.pattern
       val classMatches = allClasses.filter(_.endsWith(className))
@@ -172,9 +172,8 @@ class ApidocDirective(scanner: ScanResult, allClassesAndObjects: IndexedSeq[Stri
   ): DirectiveNode = {
     val attributes = new org.pegdown.ast.DirectiveAttributes.AttributeMap()
     val theUrl     = fqcn + anchor
-    try {
-      ParadoxUrl(theUrl)
-    } catch {
+    try ParadoxUrl(theUrl)
+    catch {
       case ParadoxUrl.Error(reason) =>
         val suggestedUrl = theUrl
           .replace("<", "%3C")
@@ -231,9 +230,9 @@ class ApidocDirective(scanner: ScanResult, allClassesAndObjects: IndexedSeq[Stri
         errorForStaticForwardersOnly(query, node, query.scalaFqcn(pkg))
         scaladocNode("scala", query.scalaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, sAnchor, node)
           .accept(visitor)
-        if (hasJavadocUrl(pkg)) {
+        if (hasJavadocUrl(pkg))
           javadocNode(query.javaLabel(pkg), query.javaFqcn(pkg), jAnchor, node).accept(visitor)
-        } else
+        else
           scaladocNode("java", query.javaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, jAnchor, node)
             .accept(visitor)
       case 2 if matches.forall(_.contains("adsl")) =>
@@ -243,13 +242,12 @@ class ApidocDirective(scanner: ScanResult, allClassesAndObjects: IndexedSeq[Stri
             scaladocNode("scala", query.scalaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, sAnchor, node)
               .accept(visitor)
           }
-          if (!pkg.contains("scaladsl")) {
+          if (!pkg.contains("scaladsl"))
             if (hasJavadocUrl(pkg))
               javadocNode(query.javaLabel(pkg), query.javaFqcn(pkg), jAnchor, node).accept(visitor)
             else
               scaladocNode("java", query.javaLabel(pkg), query.scalaFqcn(pkg) + scalaClassSuffix, jAnchor, node)
                 .accept(visitor)
-          }
         }
       case n =>
         ctx.error(
