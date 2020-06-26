@@ -34,28 +34,29 @@ object ApidocPlugin extends AutoPlugin {
 
   override def projectSettings: Seq[Setting[_]] = apidocParadoxZeroSettings
 
-  def apidocParadoxZeroSettings: Seq[Setting[_]] = Seq(
-    apidocRootPackage := "scala",
-    apidocClasses := Def.taskDyn {
-          val classpathProjects = apidocProjects.?.value
-            .map(inProjects)
-            .getOrElse {
-              inAggregates(LocalRootProject, includeRoot = true)
+  def apidocParadoxZeroSettings: Seq[Setting[_]] =
+    Seq(
+      apidocRootPackage := "scala",
+      apidocClasses := Def.taskDyn {
+            val classpathProjects = apidocProjects.?.value
+              .map(inProjects)
+              .getOrElse {
+                inAggregates(LocalRootProject, includeRoot = true)
+              }
+            val filter = ScopeFilter(classpathProjects, inConfigurations(Compile))
+            fullClasspath.all(filter).map(_.flatMap(_.files).map(_.toURI.toURL))
+          }.value,
+      paradoxDirectives ++= Def.taskDyn {
+            val classLoader = new java.net.URLClassLoader(apidocClasses.value.toArray, this.getClass.getClassLoader)
+            val scanner = new ClassGraph()
+              .whitelistPackages(apidocRootPackage.value)
+              .addClassLoader(classLoader)
+              .enableMethodInfo()
+              .scan()
+            val allClasses = scanner.getAllClasses.getNames.asScala.toVector
+            Def.task {
+              Seq((ctx: Writer.Context) => new ApidocDirective(scanner, allClasses, ctx))
             }
-          val filter = ScopeFilter(classpathProjects, inConfigurations(Compile))
-          fullClasspath.all(filter).map(_.flatMap(_.files).map(_.toURI.toURL))
-        }.value,
-    paradoxDirectives ++= Def.taskDyn {
-          val classLoader = new java.net.URLClassLoader(apidocClasses.value.toArray, this.getClass.getClassLoader)
-          val scanner = new ClassGraph()
-            .whitelistPackages(apidocRootPackage.value)
-            .addClassLoader(classLoader)
-            .enableMethodInfo()
-            .scan()
-          val allClasses = scanner.getAllClasses.getNames.asScala.toVector
-          Def.task {
-            Seq((ctx: Writer.Context) => new ApidocDirective(scanner, allClasses, ctx))
-          }
-        }.value
-  )
+          }.value
+    )
 }
