@@ -71,12 +71,12 @@ class ApidocDirectiveSpec extends MarkdownTestkit with Matchers with AnyFlatSpec
     verbatimSerializers = Writer.defaultVerbatims,
     serializerPlugins = Writer.defaultPlugins(
       Writer.defaultDirectives ++ Seq((ctx: Writer.Context) =>
-            new ApidocDirective(null: ScanResult, allClasses, ctx) {
-              override def containsOnlyStaticForwarders(classname: String): Boolean =
-                "akka.kafka.Metadata" == classname ||
-                  "akka.kafka.scaladsl.Producer" == classname
-            }
-          )
+        new ApidocDirective(null: ScanResult, allClasses, ctx) {
+          override def containsOnlyStaticForwarders(classname: String): Boolean =
+            "akka.kafka.Metadata" == classname ||
+            "akka.kafka.scaladsl.Producer" == classname
+        }
+      )
     )
   )
 

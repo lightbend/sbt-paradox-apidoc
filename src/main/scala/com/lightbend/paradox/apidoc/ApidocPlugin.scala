@@ -38,25 +38,25 @@ object ApidocPlugin extends AutoPlugin {
     Seq(
       apidocRootPackage := "scala",
       apidocClasses := Def.taskDyn {
-            val classpathProjects = apidocProjects.?.value
-              .map(inProjects)
-              .getOrElse {
-                inAggregates(LocalRootProject, includeRoot = true)
-              }
-            val filter = ScopeFilter(classpathProjects, inConfigurations(Compile))
-            fullClasspath.all(filter).map(_.flatMap(_.files).map(_.toURI.toURL))
-          }.value,
+        val classpathProjects = apidocProjects.?.value
+          .map(inProjects)
+          .getOrElse {
+            inAggregates(LocalRootProject, includeRoot = true)
+          }
+        val filter = ScopeFilter(classpathProjects, inConfigurations(Compile))
+        fullClasspath.all(filter).map(_.flatMap(_.files).map(_.toURI.toURL))
+      }.value,
       paradoxDirectives ++= Def.taskDyn {
-            val classLoader = new java.net.URLClassLoader(apidocClasses.value.toArray, this.getClass.getClassLoader)
-            val scanner = new ClassGraph()
-              .whitelistPackages(apidocRootPackage.value)
-              .addClassLoader(classLoader)
-              .enableMethodInfo()
-              .scan()
-            val allClasses = scanner.getAllClasses.getNames.asScala.toVector
-            Def.task {
-              Seq((ctx: Writer.Context) => new ApidocDirective(scanner, allClasses, ctx))
-            }
-          }.value
+        val classLoader = new java.net.URLClassLoader(apidocClasses.value.toArray, this.getClass.getClassLoader)
+        val scanner = new ClassGraph()
+          .whitelistPackages(apidocRootPackage.value)
+          .addClassLoader(classLoader)
+          .enableMethodInfo()
+          .scan()
+        val allClasses = scanner.getAllClasses.getNames.asScala.toVector
+        Def.task {
+          Seq((ctx: Writer.Context) => new ApidocDirective(scanner, allClasses, ctx))
+        }
+      }.value
     )
 }

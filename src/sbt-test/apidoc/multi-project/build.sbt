@@ -3,7 +3,7 @@ val lib = project
 val docs = project
   .enablePlugins(ParadoxPlugin)
   .settings(
-    paradoxTheme := None,
+    paradoxTheme  := None,
     paradoxGroups := Map("Language" -> Seq("Java", "Scala")),
     paradoxProperties ++= Map(
       "scaladoc.apidoc.base_url" -> "https://localhost:8000",

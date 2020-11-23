@@ -32,8 +32,8 @@ import scala.util.matching.Regex
 class ApidocDirective(scanner: ScanResult, allClassesAndObjects: IndexedSeq[String], ctx: Writer.Context)
     extends InlineDirective("apidoc") {
   final val JavadocProperty = raw"""javadoc\.(.*)\.base_url""".r
-  final val JavadocBaseUrls = ctx.properties.collect {
-    case (JavadocProperty(pkg), url) => pkg -> url
+  final val JavadocBaseUrls = ctx.properties.collect { case (JavadocProperty(pkg), url) =>
+    pkg -> url
   }
 
   val allClasses = allClassesAndObjects.filterNot(_.endsWith("$"))
@@ -252,8 +252,8 @@ class ApidocDirective(scanner: ScanResult, allClassesAndObjects: IndexedSeq[Stri
       case n =>
         ctx.error(
           s"$n matches found for $query, but not javadsl/scaladsl: ${matches.mkString(", ")}. " +
-              s"You may want to use the fully qualified class name as @apidoc[fqcn] instead of @apidoc[$query]. " +
-              s"For examples see https://github.com/lightbend/sbt-paradox-apidoc#examples",
+            s"You may want to use the fully qualified class name as @apidoc[fqcn] instead of @apidoc[$query]. " +
+            s"For examples see https://github.com/lightbend/sbt-paradox-apidoc#examples",
           node
         )
     }
