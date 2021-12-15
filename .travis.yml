@@ -5,10 +5,8 @@ scala: 2.12.10
 jobs:
   include:
     - stage: check
-      script: sbt scalafmtCheckAll || { echo "[error] Unformatted code found. Please run 'scalafmtAll' and commit the reformatted code."; false; }
-      name: Code style check (fixed with `sbt scalafmtAll`)
-    - script: sbt scalafmtSbtCheck || { echo "[error] Unformatted sbt code found. Please run 'scalafmtSbt' and commit the reformatted code."; false; }
-      name: Build code style check (fixed with `sbt scalafmtSbt`)
+      script: sbt scalafmtCheckAll; scalafmtSbtCheck || { echo "[error] Unformatted code found. Please run 'scalafmtAll; scalafmtSbt' and commit the reformatted code."; false; }
+      name: Code style check (fixed with `sbt "scalafmtAll; scalafmtSbt"`)
     - stage: test
       script: sbt test
       name: Run tests
