@@ -14,17 +14,12 @@ jobs:
       name: Run tests
     - script: sbt scripted
       name: Run sbt plugin tests
-    - stage: publish
-      script: sbt ^publish
-      name: Publish artifacts
 
 stages:
   - name: check # runs on master commits and PRs
     if: NOT tag =~ ^v
   - name: test # runs on master commits and PRs
     if: NOT tag =~ ^v
-  - name: publish # runs on main repo master commits or version-tagged commits
-    if: repo = lightbend/sbt-paradox-apidoc AND ( ( branch = master AND type = push ) OR tag =~ ^v )
 
 cache:
   directories:
@@ -39,10 +34,3 @@ before_cache:
 notifications:
   email:
     on_success: never
-
-env:
-  global:
-    # travis encrypt BINTRAY_USER=...
-    - secure: "m2cgGJQahaCn2lKg27gG+15zymwGje1XTFULA3JZ1la2A+mpA8c5Eto8ZbNRSRl8zKdzidmaK5OkI4N6jCbhL9x9W4qRVwNiGL/hTluS30PuIyOs7mF+QpcybRPJ6GzXl+ZNTDZ/UfthuOlcXyLw+kpH1j44Egx+oPKTDn5rGbLvj/UZpwaQmT8QcOoXGSD5rOdKyogH+j7jnQNGFfzJ1Dj5UIRFySlTJhlW71eAjYtWdfFUdQ2DlET6TVHGONY6PlZQt8qE/8OQyt+Yr56gNBYLtFjzfKaGXxvQNNvpoxx/FW8rp+cfnp26O3fbkmKBFrw6KtamZVvKMQGmA75A+IC6DaRa32ui5zULCh6Hswf/EVqnmpfNJbRSyBm05fT1KOn5l+XYTcGLPJmnZ+sFKS+VB5z9fVtO7fdnEQzBtn3cKOjrb+zstMBsSZk1CYHLLHcGidh/8CAjbE6/JGlq5q+AlMKN21dlh/TRKx/jfNch8KVJA5gnjlkgfQwOVxpLVYTynlwnLoQuh0369xym4Quy8mLrXWZEV+xxxbRpl3MsGIZkEXvra5vyuK6SwZuk6Rpep6oEf5S5MItn++ZGPlzlXlQLG9AYYSjetXQJqwDDewYchGZQf1xYRYLjOoX9Fz5yfEw/V1Ew3eUTDJez+mInY3ykg6rscLD+dBM8d94="
-    # travis encrypt BINTRAY_PASS=...
-    - secure: "rqD2YmU+2miMz/5a+qLnlIMMDqtvzbBZvCdFwbIJrm/QQyOlZhE3eMGznZ+ToA1mnHGDidQz7hS1vjsa1tpLAI/E+SKFzBQ9Wnud+Ei/PbL0JxJaFZizREOKW3jHd+MTuRIKfSOWXf/fWDCU3h0wEUM3yfXq0pR7ptcRORc6/e4oMclJ4/s1C/FyY61IotBuQIPFn1OksIfNFTtW8K6vuLwJYAo3L3nqisyPVQvSbts5ogdSlzs5ObLrrUBUoO36XhpwgxAPC6NS4Jin+JZ8k7JMsEoMRY8T4dBas7mjWAEFs2f5IV5apeimles+WQMqr9ebJi20Lw4Xh0Q0IXlfsbr3j1OEHFHN1fyMbYfVqfpSUXAbSBgTE+iJnJed+Z5uT4QZ5LA9MIkKcrOn4m7h9R8dNJeCGedKyEHaI+DrwFcDukV5AAFGP5yPrMPfvja48gH741mnP9E4A8lC8xlybkH43z1jThCg2UKUmOVHDlJFMBkcHmLnXOq+DQ26bEnP3MTjZ14aexNw9O1uik5EVKQiFmIdo4Zte4EVVv7qcMnLAAz8E4cOTHYyPKnngM5HIlHed1hmN57w0aRWImMDRUgzIH5Xqj1l5ldRSetuifdDoosynvzLdw2bTyfOwlsqCDVPK5xEPSqgbrqrHpVBm3pe3C0ADRsOWwQkRWd128A="
