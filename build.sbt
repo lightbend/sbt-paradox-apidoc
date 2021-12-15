@@ -29,9 +29,6 @@ organizationName     := "Lightbend Inc."
 organizationHomepage := Some(url("https://lightbend.com"))
 startYear            := Some(2018)
 
-bintrayOrganization := Some("sbt")
-bintrayRepository   := "sbt-plugin-releases"
-
 enablePlugins(AutomateHeaderPlugin)
 scalafmtOnCompile := true
 
