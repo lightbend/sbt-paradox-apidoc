@@ -39,3 +39,14 @@ scriptedLaunchOpts ++= java.lang.management.ManagementFactory.getRuntimeMXBean.g
 )
 
 packageSrc / publishArtifact := false
+
+// Disable publish for now
+ThisBuild / githubWorkflowPublishTargetBranches := Seq()
+
+ThisBuild / githubWorkflowJavaVersions := List(
+  JavaSpec.temurin("8"),
+  JavaSpec.temurin("11"),
+  JavaSpec.temurin("17")
+)
+
+ThisBuild / githubWorkflowTargetBranches := Seq("master")
