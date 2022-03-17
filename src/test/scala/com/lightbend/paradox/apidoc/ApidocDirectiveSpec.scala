@@ -335,9 +335,10 @@ class ApidocDirectiveSpec extends MarkdownTestkit with Matchers with AnyFlatSpec
   }
 
   it should "catch exception on malformed URIs and make suggestions" in {
-    try markdown(
-      """The @apidoc[label](Flow) { scala="#method[ T <: Q[T] ](Flow => Unit):Unit"  java="#method()" } thingie"""
-    )
+    try
+      markdown(
+        """The @apidoc[label](Flow) { scala="#method[ T <: Q[T] ](Flow => Unit):Unit"  java="#method()" } thingie"""
+      )
     catch {
       case t @ ParadoxException(error) =>
         error.msg should include("template resulted in an invalid URL")
