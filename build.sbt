@@ -1,6 +1,6 @@
 import scala.collection.JavaConverters._
 
-scalaVersion := "2.12.10"
+scalaVersion := "2.12.15"
 
 sbtPlugin        := true
 crossSbtVersions := List("1.0.0")
@@ -30,7 +30,6 @@ organizationHomepage := Some(url("https://lightbend.com"))
 startYear            := Some(2018)
 
 enablePlugins(AutomateHeaderPlugin)
-scalafmtOnCompile := true
 
 enablePlugins(SbtPlugin)
 scriptedLaunchOpts += ("-Dproject.version=" + version.value)
@@ -39,3 +38,14 @@ scriptedLaunchOpts ++= java.lang.management.ManagementFactory.getRuntimeMXBean.g
 )
 
 packageSrc / publishArtifact := false
+
+// Disable publish for now
+ThisBuild / githubWorkflowPublishTargetBranches := Seq()
+
+ThisBuild / githubWorkflowJavaVersions := List(
+  JavaSpec.temurin("8"),
+  JavaSpec.temurin("11"),
+  JavaSpec.temurin("17")
+)
+
+ThisBuild / githubWorkflowTargetBranches := Seq("master")
