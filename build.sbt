@@ -14,6 +14,14 @@ libraryDependencies ++= Seq(
   Library.paradoxTestkit % Test
 )
 
+// This is here to bump dependencies for sbt-paradox, see
+// https://github.com/sirthias/parboiled/issues/175, https://github.com/sirthias/parboiled/issues/128 and
+// https://github.com/sirthias/parboiled/pull/195
+libraryDependencies ++= Seq(
+  "org.parboiled" %% "parboiled-scala" % "1.4.1",
+  "org.parboiled"  % "parboiled-java"  % "1.4.1"
+)
+
 licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0"))
 homepage := Some(url("https://github.com/lightbend/sbt-paradox-apidoc"))
 scmInfo := Some(
