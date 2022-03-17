@@ -30,7 +30,6 @@ organizationHomepage := Some(url("https://lightbend.com"))
 startYear            := Some(2018)
 
 enablePlugins(AutomateHeaderPlugin)
-scalafmtOnCompile := true
 
 enablePlugins(SbtPlugin)
 scriptedLaunchOpts += ("-Dproject.version=" + version.value)
