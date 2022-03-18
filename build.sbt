@@ -37,10 +37,26 @@ scriptedLaunchOpts ++= java.lang.management.ManagementFactory.getRuntimeMXBean.g
   Seq("-Xmx", "-Xms", "-XX", "-Dfile").exists(a.startsWith)
 )
 
-packageSrc / publishArtifact := false
+ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
+ThisBuild / githubWorkflowPublishTargetBranches :=
+  Seq(RefPredicate.StartsWith(Ref.Tag("v")))
+ThisBuild / githubWorkflowPublish := Seq(
+  WorkflowStep.Sbt(
+    List("ci-release"),
+    env = Map(
+      "PGP_PASSPHRASE" -> "${{ secrets.PGP_PASSPHRASE }}",
+      "PGP_SECRET" -> "${{ secrets.PGP_SECRET }}",
+      "SONATYPE_PASSWORD" -> "${{ secrets.SONATYPE_PASSWORD }}",
+      "SONATYPE_USERNAME" -> "${{ secrets.SONATYPE_USERNAME }}"
+    )
+  )
+)
 
-// Disable publish for now
-ThisBuild / githubWorkflowPublishTargetBranches := Seq()
+ThisBuild / publishMavenStyle      := true
+ThisBuild / publishTo              := sonatypePublishTo.value
+ThisBuild / test / publishArtifact := false
+ThisBuild / pomIncludeRepository   := (_ => false)
+sonatypeProfileName                := "com.lightbend"
 
 ThisBuild / githubWorkflowJavaVersions := List(
   JavaSpec.temurin("8")
