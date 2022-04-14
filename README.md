@@ -1,9 +1,9 @@
-# sbt-paradox-apidoc [![bintray-badge][]][bintray] [![travis-badge][]][travis]
+# sbt-paradox-apidoc [![maven-central-badge][]][maven-central] [![github-actions-badge][]][github-actions]
 
-[bintray]:               https://bintray.com/sbt/sbt-plugin-releases/sbt-paradox-apidoc
-[bintray-badge]:         https://api.bintray.com/packages/sbt/sbt-plugin-releases/sbt-paradox-apidoc/images/download.svg
-[travis]:                https://travis-ci.com/lightbend/sbt-paradox-apidoc
-[travis-badge]:          https://travis-ci.com/lightbend/sbt-paradox-apidoc.svg?branch=master
+[maven-central]:         https://maven-badges.herokuapp.com/maven-central/com.lightbend.paradox/sbt-paradox-apidoc
+[maven-central-badge]:   https://maven-badges.herokuapp.com/maven-central/com.lightbend.paradox/sbt-paradox-apidoc/badge.svg
+[github-actions]:        https://github.com/lightbend/sbt-paradox-apidoc/actions/workflows/ci.yml?query=branch%3Amaster
+[github-actions-badge]:  https://github.com/lightbend/sbt-paradox-apidoc/actions/workflows/ci.yml/badge.svg?branch=master
 
 A [paradox](https://github.com/lightbend/paradox/) directive that automatically adds links for classes from documentation to scaladoc and javadoc.
 
