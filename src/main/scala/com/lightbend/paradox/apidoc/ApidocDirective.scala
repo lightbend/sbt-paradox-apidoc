@@ -102,14 +102,14 @@ class ApidocDirective(scanner: ScanResult, allClassesAndObjects: IndexedSeq[Stri
     private def splitGenerics(label: String): (String, String) =
       label.indexOf('[') match {
         case -1 => (label, "")
-        case n => label.replaceAll("\\\\_", "_").splitAt(n)
+        case n  => label.replaceAll("\\\\_", "_").splitAt(n)
       }
   }
 
   def render(node: DirectiveNode, visitor: Visitor, printer: Printer): Unit = {
     val query = node.source match {
       case Source.Empty | _: Source.Ref => Query(node.label)
-      case s: Source.Direct => Query(node.label, s.value)
+      case s: Source.Direct             => Query(node.label, s.value)
     }
     if (query.pattern.contains('.')) {
       val classNameWithDollarForInnerClasses = query.pattern.replaceAll("(\\b[A-Z].+)\\.", "$1\\$")
