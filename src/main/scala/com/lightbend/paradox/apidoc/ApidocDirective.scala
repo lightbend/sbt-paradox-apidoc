@@ -170,7 +170,7 @@ class ApidocDirective(scanner: ScanResult, allClassesAndObjects: IndexedSeq[Stri
       anchor: String,
       node: DirectiveNode
   ): DirectiveNode = {
-    val attributes = new org.pegdown.ast.DirectiveAttributes.AttributeMap()
+    val attributes = new org.pegdown.ast.DirectiveAttributes.AttributeMap
     val theUrl     = fqcn + anchor
     try ParadoxUrl(theUrl)
     catch {

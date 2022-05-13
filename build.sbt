@@ -32,7 +32,7 @@ startYear            := Some(2018)
 enablePlugins(AutomateHeaderPlugin)
 
 enablePlugins(SbtPlugin)
-scriptedLaunchOpts += ("-Dproject.version=" + version.value)
+scriptedLaunchOpts += "-Dproject.version=" + version.value
 scriptedLaunchOpts ++= java.lang.management.ManagementFactory.getRuntimeMXBean.getInputArguments.asScala.filter(a =>
   Seq("-Xmx", "-Xms", "-XX", "-Dfile").exists(a.startsWith)
 )
