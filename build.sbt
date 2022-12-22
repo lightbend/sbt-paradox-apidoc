@@ -3,7 +3,7 @@ import scala.collection.JavaConverters._
 ThisBuild / scalaVersion := "2.12.17"
 
 sbtPlugin        := true
-crossSbtVersions := List("1.0.0")
+crossSbtVersions := List("1.4.9")
 organization     := "com.lightbend.paradox"
 name             := "sbt-paradox-apidoc"
 
@@ -59,7 +59,7 @@ ThisBuild / pomIncludeRepository   := (_ => false)
 sonatypeProfileName                := "com.lightbend"
 
 ThisBuild / githubWorkflowJavaVersions := List(
-  JavaSpec.temurin("8")
+  JavaSpec.temurin("11")
 )
 
-ThisBuild / githubWorkflowTargetBranches := Seq("master")
+ThisBuild / githubWorkflowTargetBranches := Seq("main")
