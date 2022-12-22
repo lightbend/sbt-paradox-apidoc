@@ -49,7 +49,7 @@ object ApidocPlugin extends AutoPlugin {
       paradoxDirectives ++= Def.taskDyn {
         val classLoader = new java.net.URLClassLoader(apidocClasses.value.toArray, this.getClass.getClassLoader)
         val scanner = new ClassGraph()
-          .whitelistPackages(apidocRootPackage.value)
+          .acceptPackages(apidocRootPackage.value)
           .addClassLoader(classLoader)
           .enableMethodInfo()
           .scan()
