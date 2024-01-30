@@ -52,11 +52,8 @@ ThisBuild / githubWorkflowPublish := Seq(
   )
 )
 
-ThisBuild / publishMavenStyle      := true
-ThisBuild / publishTo              := sonatypePublishTo.value
-ThisBuild / test / publishArtifact := false
-ThisBuild / pomIncludeRepository   := (_ => false)
-sonatypeProfileName                := "com.lightbend"
+ThisBuild / publishTo := sonatypePublishTo.value
+sonatypeProfileName   := "com.lightbend"
 
 ThisBuild / githubWorkflowJavaVersions := List(
   JavaSpec.temurin("11")

@@ -1,9 +1,4 @@
-# sbt-paradox-apidoc [![maven-central-badge][]][maven-central] [![github-actions-badge][]][github-actions]
-
-[maven-central]:         https://maven-badges.herokuapp.com/maven-central/com.lightbend.paradox/sbt-paradox-apidoc
-[maven-central-badge]:   https://maven-badges.herokuapp.com/maven-central/com.lightbend.paradox/sbt-paradox-apidoc/badge.svg
-[github-actions]:        https://github.com/lightbend/sbt-paradox-apidoc/actions/workflows/ci.yml?query=branch%3Amaster
-[github-actions-badge]:  https://github.com/lightbend/sbt-paradox-apidoc/actions/workflows/ci.yml/badge.svg?branch=master
+# sbt-paradox-apidoc
 
 A [paradox](https://github.com/lightbend/paradox/) directive that automatically adds links for classes from documentation to scaladoc and javadoc.
 
@@ -123,7 +118,3 @@ The license is Apache 2.0, see LICENSE.
 ## Maintanance notes
 
 **This project is NOT supported under the Lightbend subscription.**
-
-The project is maintained mostly by [@richardimaoka](https://github.com/richardimaoka) and [@akka-team](https://github.com/orgs/lightbend/teams/akka-team/members).
-
-Feel free to ping above maintainers for code review or discussions. Pull requests are very welcome–thanks in advance!
