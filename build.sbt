@@ -60,3 +60,4 @@ ThisBuild / githubWorkflowJavaVersions := List(
 )
 
 ThisBuild / githubWorkflowTargetBranches := Seq("main")
+ThisBuild / githubWorkflowBuild          := Seq(WorkflowStep.Sbt(List("test", "scripted")))
