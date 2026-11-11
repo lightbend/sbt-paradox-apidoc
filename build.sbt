@@ -1,6 +1,6 @@
 import scala.collection.JavaConverters._
 
-ThisBuild / scalaVersion := "2.12.20"
+ThisBuild / scalaVersion := "2.12.21"
 
 sbtPlugin        := true
 crossSbtVersions := List("1.4.9")
